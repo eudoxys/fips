@@ -3290,7 +3290,7 @@ PR,72153,Yauco,18.085669,-66.857901,de0qys
         if state is None:
             super().__init__(data)
         else:
-            super().__init__(data.set_index("ST").loc[state].reset_index())
+            super().__init__(data.set_index("ST").loc[[state]].reset_index())
 
 if __name__ == '__main__':
 
@@ -3303,3 +3303,6 @@ if __name__ == '__main__':
     print(County(ST="CA",COUNTY="Alameda"))
     print(f"{County(ST="CA",COUNTY="Alameda")=}")
     print(County(ST="CA",COUNTY="Alameda").to_dict())
+
+    print(Counties("DC"))
+
