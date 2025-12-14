@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+fips = ["*.py"]
+
+[tool.setuptools.dynamic]
+dependencies = {file=["requirements.txt"]}
+
+[project]
+name = "fips"
+version = "0.0.0"
+description = "US state and county data accessor"
+authors = [
+    {name = "David P. Chassin <dchassin@eudoxys.com>"},
+    ]
+maintainers = [
+    {name = "David P. Chassin <dchassin@eudoxys.com>"},
+    ]
+readme = "README.md"
+requires-python = ">= 3.11"
+keywords = ["github","python","US","states","counties","FIPS"]
+license = {text="MIT License"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries",
+    ]
+dynamic=["dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/eudoxys/fips"
+Documentation = "https://www.eudoxys.com/fips"
+Repository = "https://github.com/eudoxys/fips.git"
+Issues = "https://github.com/eudoxys/fips/issues"
+
+[project.scripts]
+fips = "fips.cli:main"
