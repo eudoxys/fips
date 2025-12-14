@@ -3,14 +3,65 @@
 import pandas as pd
 from io import StringIO
 
-class Counties(pd.DataFrame):
+class County:
+    """Get county data
 
+    See `Counties()` for list of available county data. 
+    """
+    def __init__(self,**kwargs):
+        """Construct a single county data object
+
+        Arguments:  
+
+            - `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`)
+        """
+        keys = list(kwargs.keys())
+        values = list(kwargs.values())
+
+        try:
+            self.data = Counties().set_index(keys).loc[[values]].reset_index()
+        except KeyError as err:
+            self.data = None
+        if self.data is None or len(self.data) > 1:
+            raise KeyError(f"{kwargs=} is not a valid unique key")
+
+    def __getattr__(self,key):
+        return self.data[key].iloc[0]
+
+    def __str__(self):
+        return f"{self.COUNTY} {self.ST} ({self.GEOHASH})"
+
+    def __repr__(self):
+        return f"<County(FIPS={self.FIPS})>"
+
+    def to_dict(self):
+        """Convert county data object to dict"""
+        return {x:y[0] for x,y in self.data.to_dict('list').items()}
+
+class Counties(pd.DataFrame):
+    """US counties dataframe
+
+    Includes the following columns
+
+        - `ST`: state abbreviation
+
+        - `FIPS`: county FIPS code
+
+        - `COUNTY`: county/parish/burrough name
+        
+        - `LAT`: county centroid latitude
+
+        - `LON`: county centroid longitude
+
+        - `GEOHASH`: county centroid geohash
+    """
     def __init__(self,
         state:str=None,
         ):
 
-        data = pd.read_csv(StringIO("""
-ST,FIPS,COUNTY,LAT,LONG,GEOCODE
+        data = pd.read_csv(
+            StringIO("""
+ST,FIPS,COUNTY,LAT,LONG,GEOHASH
 AL,01001,Autauga,32.532237,-86.64644,djf3h6
 AL,01003,Baldwin,30.659218,-87.746067,dj3w7m
 AL,01005,Barbour,31.870253,-85.405104,djem29
@@ -3231,13 +3282,21 @@ PR,72147,Vieques,18.125418,-65.432474,de1rp5
 PR,72149,Villalba,18.130718,-66.472244,de0xpk
 PR,72151,Yabucoa,18.059858,-65.859871,de1ntr
 PR,72153,Yauco,18.085669,-66.857901,de0qys
-"""))
+"""
+),
+            dtype={"ST":str,"FIPS":str,"COUNTY":str,"LAT":float,"LON":float,"GEOHASH":str},
+            )
 
         super().__init__(data)
 
 if __name__ == '__main__':
+
     pd.options.display.width = None
     pd.options.display.max_rows = None
     pd.options.display.max_columns = None
+
     print(Counties().set_index(["ST","COUNTY"]))
 
+    print(County(ST="CA",COUNTY="Alameda"))
+    print(f"{County(ST="CA",COUNTY="Alameda")=}")
+    print(County(ST="CA",COUNTY="Alameda").to_dict())

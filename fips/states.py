@@ -2,8 +2,55 @@
 
 import pandas as pd
 
-class States(pd.DataFrame):
+class State:
+    """Get state data
 
+    See `States()` for list of available state data. 
+    """
+    def __init__(self,**kwargs):
+        """Construct a single state data object
+
+        Arguments:  
+
+            - `**kwargs`: search criteria (e.g., `{ST="CA"}`)
+        """
+        keys = list(kwargs.keys())
+        values = list(kwargs.values())
+
+        try:
+            self.data = States().set_index(keys).loc[values].reset_index()
+        except KeyError as err:
+            self.data = None
+        if self.data is None or len(self.data) > 1:
+            raise KeyError(f"{kwargs=} is not a valid unique key")
+
+    def __getattr__(self,key):
+        return self.data[key].iloc[0]
+
+    def __str__(self):
+        return f"{self.STATE}"
+
+    def __repr__(self):
+        return f"<State(ST={self.ST})>"
+
+    def to_dict(self):
+        """Convert state data object to dict"""
+        return {x:y[0] for x,y in self.data.to_dict('list').items()}
+
+
+class States(pd.DataFrame):
+    """US states dataframe
+
+    Includes the following columns
+
+        - `STATE`: state name
+
+        - `ST`: state abbreviation
+
+        - `FIPS`: state FIPS code
+
+        - `TZOFFSET`: state timezone offset
+    """
     def __init__(self):
         data = pd.DataFrame(
             columns=["STATE","ST","FIPS","TZOFFSET"],
@@ -66,4 +113,10 @@ class States(pd.DataFrame):
         super().__init__(data)
 
 if __name__ == '__main__':
+
+    pd.options.display.width = None
+    pd.options.display.max_rows = None
+    pd.options.display.max_columns = None
+
     print(States().set_index("ST"))
+    print(State(ST="CA").to_dict())
