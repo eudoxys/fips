@@ -3287,7 +3287,10 @@ PR,72153,Yauco,18.085669,-66.857901,de0qys
             dtype={"ST":str,"FIPS":str,"COUNTY":str,"LAT":float,"LON":float,"GEOHASH":str},
             )
 
-        super().__init__(data)
+        if state is None:
+            super().__init__(data)
+        else:
+            super().__init__(data.set_index("ST").loc[state].reset_index())
 
 if __name__ == '__main__':
 
@@ -3295,7 +3298,7 @@ if __name__ == '__main__':
     pd.options.display.max_rows = None
     pd.options.display.max_columns = None
 
-    print(Counties().set_index(["ST","COUNTY"]))
+    print(Counties("CA").set_index(["ST","COUNTY"]))
 
     print(County(ST="CA",COUNTY="Alameda"))
     print(f"{County(ST="CA",COUNTY="Alameda")=}")
