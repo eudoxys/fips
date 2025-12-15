@@ -18,7 +18,9 @@ class State:
         values = list(kwargs.values())
 
         try:
-            self.data = States().set_index(keys).loc[values].reset_index()
+            self.data = States(with_territories=True)\
+                .set_index(keys).loc[values]\
+                .reset_index()
         except KeyError as err:
             self.data = None
         if self.data is None or len(self.data) > 1:
@@ -31,7 +33,7 @@ class State:
         return f"{self.STATE}"
 
     def __repr__(self):
-        return f"<State(ST={self.ST})>"
+        return f"State(ST={self.ST})"
 
     def to_dict(self):
         """Convert state data object to dict"""
@@ -51,7 +53,15 @@ class States(pd.DataFrame):
 
         - `TZOFFSET`: state timezone offset
     """
-    def __init__(self):
+    def __init__(self,
+        with_territories:bool=False,
+        ):
+        """Construct states data frame
+
+        Arguments:
+
+            - `with_territories`: include territories (PR and VI)
+        """
         data = pd.DataFrame(
             columns=["STATE","ST","FIPS","TZOFFSET"],
             data=[
@@ -94,7 +104,6 @@ class States(pd.DataFrame):
                 ["Oklahoma","OK","40",-6],
                 ["Oregon","OR","41",-8],
                 ["Pennsylvania","PA","42",-5],
-                # ["Puerto Rico","PR","72",-4],
                 ["Rhode Island","RI","44",-5],
                 ["South Carolina","SC","45",-5],
                 ["South Dakota","SD","46",-6],
@@ -102,13 +111,15 @@ class States(pd.DataFrame):
                 ["Texas","TX","48",-6],
                 ["Utah","UT","49",-7],
                 ["Vermont","VT","50",-5],
-                # ["Virgin Islands","VI","78",-4],
                 ["Virginia","VA","51",-5],
                 ["Washington","WA","53",-8],
                 ["West Virginia","WV","54",-5],
                 ["Wisconsin","WI","55",-6],
                 ["Wyoming","WY","56",-7],
-                ],
+            ] + ([
+                ["Puerto Rico","PR","72",-4],
+                ["Virgin Islands","VI","78",-4],
+                ] if with_territories else []),
             )
         super().__init__(data)
 
@@ -118,5 +129,6 @@ if __name__ == '__main__':
     pd.options.display.max_rows = None
     pd.options.display.max_columns = None
 
-    print(States().set_index("ST"))
-    print(State(ST="CA").to_dict())
+    for st in States(with_territories=True).set_index("ST").index:
+        state = State(ST=st)
+        print(st,state,repr(state),state.to_dict())
