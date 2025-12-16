@@ -3223,7 +3223,7 @@ if __name__ == '__main__':
     print(Counties("CA").set_index(["ST","COUNTY"]))
 
     print(County(ST="CA",COUNTY="Alameda"))
-    print(f"{County(ST="CA",COUNTY="Alameda")=}")
+    print(f"""{County(ST="CA",COUNTY="Alameda")=}""")
     print(County(ST="CA",COUNTY="Alameda").to_dict())
 
     print(Counties("DC"))
