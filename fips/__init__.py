@@ -23,6 +23,22 @@ Gets state and county information based on Census Bureau FIPS codes.
 
         from fips.counties import Counties
         print(Counties().set_index(["ST","COUNTY"]))
+
+# Package information
+
+# Package information
+
+- Source code: https://github.com/eudoxys/fips
+
+- Documentation: https://www.eudoxys.com/fips
+
+- Issues: https://github.com/eudoxys/fips/issues
+
+- License: https://github.com/eudoxys/fips/blob/main/LICENSE
+
+- Requirements: https://github.com/eudoxys/fips/blob/main/requirements.txt
+
+---
 """
 from fips.states import States, State
 from fips.counties import Counties, County
