@@ -26,8 +26,6 @@ Gets state and county information based on Census Bureau FIPS codes.
 
 # Package information
 
-# Package information
-
 - Source code: https://github.com/eudoxys/fips
 
 - Documentation: https://www.eudoxys.com/fips
