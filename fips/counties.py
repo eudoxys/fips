@@ -11,9 +11,9 @@ class County:
     def __init__(self,**kwargs):
         """Construct a single county data object
 
-        Arguments:  
+        # Arguments 
 
-            - `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`)
+        -  `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`)
         """
         keys = list(kwargs.keys())
         values = list(kwargs.values())
@@ -43,17 +43,17 @@ class Counties(pd.DataFrame):
 
     Includes the following columns
 
-        - `ST`: state abbreviation
+    - `ST`: state abbreviation
 
-        - `FIPS`: county FIPS code
+    - `FIPS`: county FIPS code
 
-        - `COUNTY`: county/parish/burrough name
-        
-        - `LAT`: county centroid latitude
+    - `COUNTY`: county/parish/burrough name
+    
+    - `LAT`: county centroid latitude
 
-        - `LON`: county centroid longitude
+    - `LON`: county centroid longitude
 
-        - `GEOHASH`: county centroid geohash
+    - `GEOHASH`: county centroid geohash
     """
     def __init__(self,
         state:str=None,
@@ -61,7 +61,7 @@ class Counties(pd.DataFrame):
 
         data = pd.read_csv(
             StringIO("""
-ST,FIPS,COUNTY,LAT,LONG,GEOHASH
+ST,FIPS,COUNTY,LAT,LON,GEOHASH
 AL,01001,Autauga,32.532237,-86.64644,djf3h6
 AL,01003,Baldwin,30.659218,-87.746067,dj3w7m
 AL,01005,Barbour,31.870253,-85.405104,djem29

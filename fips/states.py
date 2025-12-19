@@ -10,9 +10,9 @@ class State:
     def __init__(self,**kwargs):
         """Construct a single state data object
 
-        Arguments:  
+        # Arguments
 
-            - `**kwargs`: search criteria (e.g., `{ST="CA"}`)
+        - `**kwargs`: search criteria (e.g., `{ST="CA"}`)
         """
         keys = list(kwargs.keys())
         values = list(kwargs.values())
@@ -45,22 +45,22 @@ class States(pd.DataFrame):
 
     Includes the following columns
 
-        - `STATE`: state name
+    - `STATE`: state name
 
-        - `ST`: state abbreviation
+    - `ST`: state abbreviation
 
-        - `FIPS`: state FIPS code
+    - `FIPS`: state FIPS code
 
-        - `TZOFFSET`: state timezone offset
+    - `TZOFFSET`: state timezone offset
     """
     def __init__(self,
         with_territories:bool=False,
         ):
         """Construct states data frame
 
-        Arguments:
+        # Arguments
 
-            - `with_territories`: include territories (PR and VI)
+        - `with_territories`: include territories (PR and VI)
         """
         data = pd.DataFrame(
             columns=["STATE","ST","FIPS","TZOFFSET"],

@@ -9,19 +9,24 @@ from fips.states import States
 from fips.counties import Counties
 
 E_OK = 0
+"""Exit code for success"""
+
 E_FAILED = 1
+"""Exit code for failure"""
+
 E_SYNTAX = 2
+"""Exit code for syntax error"""
 
 def main(*args:list[str]) -> int:
     """State and county data accessor main command line processor
 
-    Argument:
+    # Argument
 
-        - `*args`: command line arguments (`None` is `sys.argv`)
+    - `*args`: command line arguments (`None` is `sys.argv`)
 
-    Returns:
+    # Returns
 
-        - `int`: return/exit code
+    - `int`: return/exit code (see `E_*` codes)
     """
     # pylint: disable=too-many-return-statements
     try:

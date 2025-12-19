@@ -1,26 +1,28 @@
 """US state and county data
 
-Examples:
+Gets state and county information based on Census Bureau FIPS codes.
 
-    - Get California's FIPS code
+# Examples
 
-    from fips.states import State
-    print(State(ST="CA").FIPS)
+- Get California's FIPS code
 
-    - Get list of states indexes by state abbrevation
+        from fips.states import State
+        print(State(ST="CA").FIPS)
 
-    from fips.states import States
-    print(States().set_index("ST"))
+- Get list of states indexes by state abbrevation
 
-    - Get Alameda County's GEOHASH code
+        from fips.states import States
+        print(States().set_index("ST"))
 
-    from fips.counties import County
-    print(County(ST="CA",COUNTY="Alameda").GEOHASH)
+- Get Alameda County's GEOHASH code
 
-    - Get list of counties indexes by state and county name
+        from fips.counties import County
+        print(County(ST="CA",COUNTY="Alameda").GEOHASH)
 
-    from fips.counties import Counties
-    print(Counties().set_index(["ST","COUNTY"]))
+- Get list of counties indexes by state and county name
+
+        from fips.counties import Counties
+        print(Counties().set_index(["ST","COUNTY"]))
 """
 from fips.states import States, State
 from fips.counties import Counties, County
