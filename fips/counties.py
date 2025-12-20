@@ -3246,9 +3246,9 @@ WY,56045,Weston,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC
 
 if __name__ == '__main__':
 
-    pd.options.display.width = None
-    pd.options.display.max_rows = None
-    pd.options.display.max_columns = None
+    # pd.options.display.width = None
+    # pd.options.display.max_rows = None
+    # pd.options.display.max_columns = None
 
     print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
 

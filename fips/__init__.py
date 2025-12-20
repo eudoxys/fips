@@ -77,6 +77,29 @@ County data includes the following:
 
 # Python examples
 
+- Get WECC counties
+
+        from fips.counties import Counties
+        print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
+
+    Outputs
+
+             FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO
+        ST                                                                       
+        AZ  04001      Apache  35.385084 -109.490172  9w61k3      -7.0    1  WECC
+        AZ  04003     Cochise  31.840129 -109.775163  9t9vnh      -7.0    0  WECC
+        AZ  04005    Coconino  35.829692 -111.773728  9w2ebd      -7.0    1  WECC
+        AZ  04007        Gila  33.789618 -110.811870  9w10nr      -7.0    0  WECC
+        AZ  04009      Graham  32.931828 -109.878310  9tcg7e      -7.0    0  WECC
+        ..    ...         ...        ...         ...     ...       ...  ...   ...
+        WY  56037  Sweetwater  41.660328 -108.875677  9x6t42      -7.0    1  WECC
+        WY  56039       Teton  44.048662 -110.426087  9xc6x4      -7.0    1  WECC
+        WY  56041       Uinta  41.284726 -110.558947  9x36u5      -7.0    1  WECC
+        WY  56043    Washakie  43.878831 -107.669052  9xg3tg      -7.0    1  WECC
+        WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
+
+        [407 rows x 8 columns]    
+
 - Get California's FIPS code
 
         from fips.states import State
@@ -86,24 +109,24 @@ County data includes the following:
 
         06
 
-- Get list of states indexes by state abbrevation
+- Get list of states names indexed by state abbrevation
 
         from fips.states import States
         print(States().set_index("ST"))
 
   Outputs
 
-                             STATE FIPS  TZOFFSET
+                           STATE
         ST                                     
-        AL               Alabama   01        -6
-        AK                Alaska   02        -9
-        AZ               Arizona   04        -7
-        AR              Arkansas   05        -6
+        AL               Alabama
+        AK                Alaska
+        AZ               Arizona
+        AR              Arkansas
         ...
-        WA            Washington   53        -8
-        WV         West Virginia   54        -5
-        WI             Wisconsin   55        -6
-        WY               Wyoming   56        -7
+        WA            Washington
+        WV         West Virginia
+        WI             Wisconsin
+        WY               Wyoming
 
 - Get Alameda County's GEOHASH code
 
@@ -114,26 +137,26 @@ County data includes the following:
 
         9q9q1v
 
-- Get list of counties indexes by state and county name
+- Get counties geographic data by state and county name
 
         from fips.counties import Counties
-        print(Counties().set_index(["ST","COUNTY"]))
+        print(Counties().set_index(["ST","COUNTY"])["LAT","LON","GEOHASH"])
 
   Outputs
 
-                        FIPS        LAT         LON GEOHASH
+                             LAT         LON GEOHASH
         ST COUNTY                                          
-        AL Autauga     01001  32.532237  -86.646440  djf3h6
-           Baldwin     01003  30.659218  -87.746067  dj3w7m
-           Barbour     01005  31.870253  -85.405104  djem29
-           Bibb        01007  33.015893  -87.127148  djf5c6
-           Blount      01009  33.977358  -86.566440  dn43q1
+        AL Autauga     32.532237  -86.646440  djf3h6
+           Baldwin     30.659218  -87.746067  dj3w7m
+           Barbour     31.870253  -85.405104  djem29
+           Bibb        33.015893  -87.127148  djf5c6
+           Blount      33.977358  -86.566440  dn43q1
         ...              ...        ...         ...     ...
-        WY Sweetwater  56037  41.660328 -108.875677  9x6t42
-           Teton       56039  44.048662 -110.426087  9xc6x4
-           Uinta       56041  41.284726 -110.558947  9x36u5
-           Washakie    56043  43.878831 -107.669052  9xg3tg
-           Weston      56045  43.846213 -104.570020  9xv9km
+        WY Sweetwater  41.660328 -108.875677  9x6t42
+           Teton       44.048662 -110.426087  9xc6x4
+           Uinta       41.284726 -110.558947  9x36u5
+           Washakie    43.878831 -107.669052  9xg3tg
+           Weston      43.846213 -104.570020  9xv9km
 
         [3142 rows x 4 columns]
 
