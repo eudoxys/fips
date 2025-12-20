@@ -31,6 +31,12 @@ State data includes the following:
 - `TZOFFSET`: state timezone offset (note that some states have more than one
   timezone, in which case the largest population center timezone is used.)
 
+- `DST`: flag to indicate whether summer-time is observed
+
+- `SYSTEM`: system interconnection name
+
+- `RO`: reliability organization name(s)
+
 County data includes the following:
 
 - `ST`: state abbreviation, e.g., `"CA"`
