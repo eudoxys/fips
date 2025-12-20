@@ -82,7 +82,7 @@ County data includes the following:
         from fips.counties import Counties
         print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
 
-    Outputs
+  Outputs
 
              FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO
         ST                                                                       
