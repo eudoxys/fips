@@ -141,7 +141,9 @@ County data includes the following:
 
 - License: https://github.com/eudoxys/fips/blob/main/LICENSE
 
-- Requirements: https://github.com/eudoxys/fips/blob/main/requirements.txt
+- Dependencies: 
+
+    - [Pandas](https://pandas.pydata.org/docs/)
 
 ---
 """
