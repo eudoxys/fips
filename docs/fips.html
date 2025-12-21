@@ -134,9 +134,9 @@ included.</p></li>
 
 <p>Outputs</p>
 
-<pre><code>           STATE FIPS  TZOFFSET
-  ST                           
-  CA  California   06        -8
+<pre><code>           STATE FIPS  TZOFFSET  DST SYSTEM    RO
+  ST                                             
+  CA  California   06      -8.0    1   WECC  WECC
 </code></pre></li>
 <li><p>Get Alameda County CA data</p>
 
@@ -145,9 +145,9 @@ included.</p></li>
 
 <p>Outputs</p>
 
-<pre><code>               FIPS        LAT         LON GEOHASH
-  ST COUNTY                                       
-  CA Alameda  06001  37.647139 -121.912488  9q9q1v
+<pre><code>               FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
+  ST COUNTY                                                                   
+  CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC
 </code></pre></li>
 </ul>
 
@@ -156,27 +156,27 @@ included.</p></li>
 <ul>
 <li><p>Get WECC counties</p>
 
-<pre><code>from <a href="fips/counties.html">fips.counties</a> import Counties
-print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
+<pre><code>  from <a href="fips/counties.html">fips.counties</a> import Counties
+  print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
 </code></pre>
 
 <p>Outputs</p>
 
-<pre><code>     FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO
-ST                                                                       
-AZ  04001      Apache  35.385084 -109.490172  9w61k3      -7.0    1  WECC
-AZ  04003     Cochise  31.840129 -109.775163  9t9vnh      -7.0    0  WECC
-AZ  04005    Coconino  35.829692 -111.773728  9w2ebd      -7.0    1  WECC
-AZ  04007        Gila  33.789618 -110.811870  9w10nr      -7.0    0  WECC
-AZ  04009      Graham  32.931828 -109.878310  9tcg7e      -7.0    0  WECC
-..    ...         ...        ...         ...     ...       ...  ...   ...
-WY  56037  Sweetwater  41.660328 -108.875677  9x6t42      -7.0    1  WECC
-WY  56039       Teton  44.048662 -110.426087  9xc6x4      -7.0    1  WECC
-WY  56041       Uinta  41.284726 -110.558947  9x36u5      -7.0    1  WECC
-WY  56043    Washakie  43.878831 -107.669052  9xg3tg      -7.0    1  WECC
-WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
+<pre><code>       FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO
+  ST                                                                       
+  AZ  04001      Apache  35.385084 -109.490172  9w61k3      -7.0    1  WECC
+  AZ  04003     Cochise  31.840129 -109.775163  9t9vnh      -7.0    0  WECC
+  AZ  04005    Coconino  35.829692 -111.773728  9w2ebd      -7.0    1  WECC
+  AZ  04007        Gila  33.789618 -110.811870  9w10nr      -7.0    0  WECC
+  AZ  04009      Graham  32.931828 -109.878310  9tcg7e      -7.0    0  WECC
+  ..    ...         ...        ...         ...     ...       ...  ...   ...
+  WY  56037  Sweetwater  41.660328 -108.875677  9x6t42      -7.0    1  WECC
+  WY  56039       Teton  44.048662 -110.426087  9xc6x4      -7.0    1  WECC
+  WY  56041       Uinta  41.284726 -110.558947  9x36u5      -7.0    1  WECC
+  WY  56043    Washakie  43.878831 -107.669052  9xg3tg      -7.0    1  WECC
+  WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
 
-[407 rows x 8 columns]
+  [407 rows x 8 columns]
 </code></pre></li>
 <li><p>Get California's FIPS code</p>
 
@@ -328,9 +328,9 @@ WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
 </span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">  </span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">  Outputs</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">                 STATE FIPS  TZOFFSET</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        ST                           </span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">        CA  California   06        -8</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">                 STATE FIPS  TZOFFSET  DST SYSTEM    RO</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        ST                                             </span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">        CA  California   06      -8.0    1   WECC  WECC</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">- Get Alameda County CA data</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
@@ -338,9 +338,9 @@ WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">  Outputs</span>
 </span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">                     FIPS        LAT         LON GEOHASH</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        ST COUNTY                                       </span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        CA Alameda  06001  37.647139 -121.912488  9q9q1v</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">                     FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        ST COUNTY                                                                   </span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC</span>
 </span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd"># Python examples</span>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
@@ -349,7 +349,7 @@ WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        from fips.counties import Counties</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        print(Counties(use_index=[&quot;SYSTEM&quot;,&quot;ST&quot;]).loc[&quot;WECC&quot;])</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">    Outputs</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">  Outputs</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">             FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">        ST                                                                       </span>
