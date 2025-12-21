@@ -2,11 +2,13 @@
 
 # Usage
 
-    fips [-h] [--warning] [--debug] locale [locale ...]
+    fips [-h] [--warning] [--debug] state [county]
 
 ## Positional arguments
 
-- `locale`: state and optional county name
+- `state`: state abbreviation, e.g., `"CA"`
+
+- `county`: county name, e.g., `"Alameda"`
 
 ## Options
 
