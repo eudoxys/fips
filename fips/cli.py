@@ -51,7 +51,7 @@ def main(*args:list[str]) -> int:
             )
         parser.add_argument("-f","--format",
             choices={"table","csv"},
-            default={"table"},
+            default="table",
             help="specify the output format",
             )
         parser.add_argument("--header",
