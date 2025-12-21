@@ -2,7 +2,7 @@
 
 # Usage
 
-    fips [-h] [--warning] [--debug] state [county]
+    fips [OPTIONS ...] state [county]
 
 ## Positional arguments
 
@@ -12,11 +12,21 @@
 
 ## Options
 
+- `--debug`: enable traceback on exceptions
+
+- `-f|--format FORMAT`: specify format. Valid formats are `table`(the default)
+  to output a human readable data frame format, or `csv` to output in machine
+  readable CSV format.
+
+- `--header`: disable CSV header output
+
 - `-h|--help`: get online documentation
 
-- `--warning`: enable warning messages
+- `--index`: disable CSV index output
 
-- `--debug`: enable traceback on exceptions
+- `-o|--output`: specify CSV output filename (default is `/dev/stdout`)
+
+- `--warning`: enable warning messages
 
 # Description
 

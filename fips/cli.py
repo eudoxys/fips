@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import pathlib
 import warnings
 import pandas as pd
 # pylint: disable=unused-import
@@ -41,19 +42,42 @@ def main(*args:list[str]) -> int:
             description="US state and county data accessor",
             epilog="See https://www.eudoxys.com/fips for documentation. ",
             )
-        parser.add_argument("locale",nargs="+")
-        parser.add_argument("--warning",
-            action="store_true",
-            help="disable warning messages from python")
+        parser.add_argument("locale",
+            nargs="+",
+            help="specify state abbreviation and optional county name")
         parser.add_argument("--debug",
             action="store_true",
-            help="enable debug traceback on exceptions")
+            help="enable debug traceback on exceptions",
+            )
+        parser.add_argument("-f","--format",
+            choices={"table","csv"},
+            default={"table"},
+            help="specify the output format",
+            )
+        parser.add_argument("--header",
+            action="store_false",
+            help="disable CSV header output",
+            )
+        parser.add_argument("--index",
+            action="store_false",
+            help="disable CSV index output",
+            )
+        parser.add_argument("-o","--output",
+            type=pathlib.Path,
+            default=None,
+            metavar="OUTPUT",
+            help="specify the CSV output filename",
+            )
+        parser.add_argument("--warning",
+            action="store_false",
+            help="disable warning messages from python",
+            )
 
         # parse arguments
         args = parser.parse_args()
 
         # setup warning handling
-        if not args.warning:
+        if args.warning:
             warnings.showwarning = lambda *x:print(
                 f"WARNING [{__package__}]:",
                 x[0],
@@ -81,7 +105,20 @@ def main(*args:list[str]) -> int:
             case "_":
                 raise ValueError(f"{args.locale=} is invalid")
 
-        print(result)
+        # print result using format
+        match args.format:
+            case "table":
+                print(result)
+            case "csv":
+                result.to_csv(
+                    args.output if args.output else sys.stdout,
+                    index=args.index,
+                    header=args.header,
+                    )
+            case "_":
+                raise ValueError(f"{args.format} is invalid")
+                return E_SYNTAX
+
         return E_OK
 
     # pylint: disable=broad-exception-caught
