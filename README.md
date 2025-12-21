@@ -1,3 +1,5 @@
+[![validate](https://github.com/eudoxys/fips/actions/workflows/validate.yaml/badge.svg)](https://github.com/eudoxys/fips/actions/workflows/validate.yaml)
+
 # US state and county data based on Census Bureau FIPS codes
 
 ## Documentation
