@@ -61,9 +61,9 @@ County data includes the following:
   
   Outputs
 
-                 STATE FIPS  TZOFFSET
-        ST                           
-        CA  California   06        -8
+                 STATE FIPS  TZOFFSET  DST SYSTEM    RO
+        ST                                             
+        CA  California   06      -8.0    1   WECC  WECC
 
 - Get Alameda County CA data
 
@@ -71,9 +71,9 @@ County data includes the following:
 
   Outputs
 
-                     FIPS        LAT         LON GEOHASH
-        ST COUNTY                                       
-        CA Alameda  06001  37.647139 -121.912488  9q9q1v
+                     FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
+        ST COUNTY                                                                   
+        CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC
 
 # Python examples
 
