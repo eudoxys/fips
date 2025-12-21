@@ -84,11 +84,11 @@ class States(pd.DataFrame):
 
         # Arguments
 
-        - `with_territories`: include US territories (PR and VI)
+        - `with_territories`: append US territories (PR and VI)
 
-        - `with_canada`: include Canadian provinces (provinces listed under "STATE"--sorry)
+        - `with_canada`: append Canadian provinces (provinces listed under "STATE"--sorry)
 
-        - `with_mexico`: include Baja California (listed under "STATE" as `"MEXICO"`)
+        - `with_mexico`: append Baja California (listed under "STATE" as `"MEXICO"`)
 
         - `use_index`: specify index to initially set
         """
@@ -163,10 +163,10 @@ class States(pd.DataFrame):
                 ["Saskatchewan","SK","C9",-6.0,1,"EAST","MRO"],
             ] if with_canada else []
             ) + ([
-            ] if with_mexico else [
                 ["Mexico","MX","M0",-8.0,1,"WECC","WECC|MFEC"],
-                ]),
-            )
+                ] if with_mexico else []
+            ),
+        )
         if use_index:
             data.set_index(use_index,inplace=True)
         super().__init__(data.sort_index())
