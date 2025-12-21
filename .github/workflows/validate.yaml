@@ -1,0 +1,35 @@
+name: validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  pypower:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+    
+    - name: Install packages
+      run: |
+        python3 -m pip install --upgrade pip -r requirements.txt pylint
+
+    - name: Analyse code
+      run: |
+        cd fips
+        pylint --fail-under 0 *.py
+
+    - name: Run tests
+      run: |
+        cd tests
+        pip install ..
+        python3 tests.py
