@@ -177,11 +177,11 @@
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        # Arguments</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        - `with_territories`: include US territories (PR and VI)</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        - `with_territories`: append US territories (PR and VI)</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">        - `with_canada`: include Canadian provinces (provinces listed under &quot;STATE&quot;--sorry)</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">        - `with_canada`: append Canadian provinces (provinces listed under &quot;STATE&quot;--sorry)</span>
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">        - `with_mexico`: include Baja California (listed under &quot;STATE&quot; as `&quot;MEXICO&quot;`)</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">        - `with_mexico`: append Baja California (listed under &quot;STATE&quot; as `&quot;MEXICO&quot;`)</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">        - `use_index`: specify index to initially set</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -256,10 +256,10 @@
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>                <span class="p">[</span><span class="s2">&quot;Saskatchewan&quot;</span><span class="p">,</span><span class="s2">&quot;SK&quot;</span><span class="p">,</span><span class="s2">&quot;C9&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;EAST&quot;</span><span class="p">,</span><span class="s2">&quot;MRO&quot;</span><span class="p">],</span>
 </span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>            <span class="p">]</span> <span class="k">if</span> <span class="n">with_canada</span> <span class="k">else</span> <span class="p">[]</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>            <span class="p">)</span> <span class="o">+</span> <span class="p">([</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>            <span class="p">]</span> <span class="k">if</span> <span class="n">with_mexico</span> <span class="k">else</span> <span class="p">[</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>                <span class="p">[</span><span class="s2">&quot;Mexico&quot;</span><span class="p">,</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span><span class="s2">&quot;M0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">8.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;WECC&quot;</span><span class="p">,</span><span class="s2">&quot;WECC|MFEC&quot;</span><span class="p">],</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>                <span class="p">]),</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>            <span class="p">)</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>                <span class="p">[</span><span class="s2">&quot;Mexico&quot;</span><span class="p">,</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span><span class="s2">&quot;M0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">8.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;WECC&quot;</span><span class="p">,</span><span class="s2">&quot;WECC|MFEC&quot;</span><span class="p">],</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>                <span class="p">]</span> <span class="k">if</span> <span class="n">with_mexico</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>            <span class="p">),</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>        <span class="p">)</span>
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>        <span class="k">if</span> <span class="n">use_index</span><span class="p">:</span>
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>            <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">use_index</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">())</span>
@@ -457,11 +457,11 @@
 </span><span id="States-85"><a href="#States-85"><span class="linenos"> 85</span></a>
 </span><span id="States-86"><a href="#States-86"><span class="linenos"> 86</span></a><span class="sd">        # Arguments</span>
 </span><span id="States-87"><a href="#States-87"><span class="linenos"> 87</span></a>
-</span><span id="States-88"><a href="#States-88"><span class="linenos"> 88</span></a><span class="sd">        - `with_territories`: include US territories (PR and VI)</span>
+</span><span id="States-88"><a href="#States-88"><span class="linenos"> 88</span></a><span class="sd">        - `with_territories`: append US territories (PR and VI)</span>
 </span><span id="States-89"><a href="#States-89"><span class="linenos"> 89</span></a>
-</span><span id="States-90"><a href="#States-90"><span class="linenos"> 90</span></a><span class="sd">        - `with_canada`: include Canadian provinces (provinces listed under &quot;STATE&quot;--sorry)</span>
+</span><span id="States-90"><a href="#States-90"><span class="linenos"> 90</span></a><span class="sd">        - `with_canada`: append Canadian provinces (provinces listed under &quot;STATE&quot;--sorry)</span>
 </span><span id="States-91"><a href="#States-91"><span class="linenos"> 91</span></a>
-</span><span id="States-92"><a href="#States-92"><span class="linenos"> 92</span></a><span class="sd">        - `with_mexico`: include Baja California (listed under &quot;STATE&quot; as `&quot;MEXICO&quot;`)</span>
+</span><span id="States-92"><a href="#States-92"><span class="linenos"> 92</span></a><span class="sd">        - `with_mexico`: append Baja California (listed under &quot;STATE&quot; as `&quot;MEXICO&quot;`)</span>
 </span><span id="States-93"><a href="#States-93"><span class="linenos"> 93</span></a>
 </span><span id="States-94"><a href="#States-94"><span class="linenos"> 94</span></a><span class="sd">        - `use_index`: specify index to initially set</span>
 </span><span id="States-95"><a href="#States-95"><span class="linenos"> 95</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -536,10 +536,10 @@
 </span><span id="States-164"><a href="#States-164"><span class="linenos">164</span></a>                <span class="p">[</span><span class="s2">&quot;Saskatchewan&quot;</span><span class="p">,</span><span class="s2">&quot;SK&quot;</span><span class="p">,</span><span class="s2">&quot;C9&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;EAST&quot;</span><span class="p">,</span><span class="s2">&quot;MRO&quot;</span><span class="p">],</span>
 </span><span id="States-165"><a href="#States-165"><span class="linenos">165</span></a>            <span class="p">]</span> <span class="k">if</span> <span class="n">with_canada</span> <span class="k">else</span> <span class="p">[]</span>
 </span><span id="States-166"><a href="#States-166"><span class="linenos">166</span></a>            <span class="p">)</span> <span class="o">+</span> <span class="p">([</span>
-</span><span id="States-167"><a href="#States-167"><span class="linenos">167</span></a>            <span class="p">]</span> <span class="k">if</span> <span class="n">with_mexico</span> <span class="k">else</span> <span class="p">[</span>
-</span><span id="States-168"><a href="#States-168"><span class="linenos">168</span></a>                <span class="p">[</span><span class="s2">&quot;Mexico&quot;</span><span class="p">,</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span><span class="s2">&quot;M0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">8.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;WECC&quot;</span><span class="p">,</span><span class="s2">&quot;WECC|MFEC&quot;</span><span class="p">],</span>
-</span><span id="States-169"><a href="#States-169"><span class="linenos">169</span></a>                <span class="p">]),</span>
-</span><span id="States-170"><a href="#States-170"><span class="linenos">170</span></a>            <span class="p">)</span>
+</span><span id="States-167"><a href="#States-167"><span class="linenos">167</span></a>                <span class="p">[</span><span class="s2">&quot;Mexico&quot;</span><span class="p">,</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span><span class="s2">&quot;M0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">8.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;WECC&quot;</span><span class="p">,</span><span class="s2">&quot;WECC|MFEC&quot;</span><span class="p">],</span>
+</span><span id="States-168"><a href="#States-168"><span class="linenos">168</span></a>                <span class="p">]</span> <span class="k">if</span> <span class="n">with_mexico</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span id="States-169"><a href="#States-169"><span class="linenos">169</span></a>            <span class="p">),</span>
+</span><span id="States-170"><a href="#States-170"><span class="linenos">170</span></a>        <span class="p">)</span>
 </span><span id="States-171"><a href="#States-171"><span class="linenos">171</span></a>        <span class="k">if</span> <span class="n">use_index</span><span class="p">:</span>
 </span><span id="States-172"><a href="#States-172"><span class="linenos">172</span></a>            <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">use_index</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="States-173"><a href="#States-173"><span class="linenos">173</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">())</span>
@@ -594,11 +594,11 @@ are all listed, seperated by <code>"|"</code>.</p></li>
 </span><span id="States.__init__-85"><a href="#States.__init__-85"><span class="linenos"> 85</span></a>
 </span><span id="States.__init__-86"><a href="#States.__init__-86"><span class="linenos"> 86</span></a><span class="sd">        # Arguments</span>
 </span><span id="States.__init__-87"><a href="#States.__init__-87"><span class="linenos"> 87</span></a>
-</span><span id="States.__init__-88"><a href="#States.__init__-88"><span class="linenos"> 88</span></a><span class="sd">        - `with_territories`: include US territories (PR and VI)</span>
+</span><span id="States.__init__-88"><a href="#States.__init__-88"><span class="linenos"> 88</span></a><span class="sd">        - `with_territories`: append US territories (PR and VI)</span>
 </span><span id="States.__init__-89"><a href="#States.__init__-89"><span class="linenos"> 89</span></a>
-</span><span id="States.__init__-90"><a href="#States.__init__-90"><span class="linenos"> 90</span></a><span class="sd">        - `with_canada`: include Canadian provinces (provinces listed under &quot;STATE&quot;--sorry)</span>
+</span><span id="States.__init__-90"><a href="#States.__init__-90"><span class="linenos"> 90</span></a><span class="sd">        - `with_canada`: append Canadian provinces (provinces listed under &quot;STATE&quot;--sorry)</span>
 </span><span id="States.__init__-91"><a href="#States.__init__-91"><span class="linenos"> 91</span></a>
-</span><span id="States.__init__-92"><a href="#States.__init__-92"><span class="linenos"> 92</span></a><span class="sd">        - `with_mexico`: include Baja California (listed under &quot;STATE&quot; as `&quot;MEXICO&quot;`)</span>
+</span><span id="States.__init__-92"><a href="#States.__init__-92"><span class="linenos"> 92</span></a><span class="sd">        - `with_mexico`: append Baja California (listed under &quot;STATE&quot; as `&quot;MEXICO&quot;`)</span>
 </span><span id="States.__init__-93"><a href="#States.__init__-93"><span class="linenos"> 93</span></a>
 </span><span id="States.__init__-94"><a href="#States.__init__-94"><span class="linenos"> 94</span></a><span class="sd">        - `use_index`: specify index to initially set</span>
 </span><span id="States.__init__-95"><a href="#States.__init__-95"><span class="linenos"> 95</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -673,10 +673,10 @@ are all listed, seperated by <code>"|"</code>.</p></li>
 </span><span id="States.__init__-164"><a href="#States.__init__-164"><span class="linenos">164</span></a>                <span class="p">[</span><span class="s2">&quot;Saskatchewan&quot;</span><span class="p">,</span><span class="s2">&quot;SK&quot;</span><span class="p">,</span><span class="s2">&quot;C9&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;EAST&quot;</span><span class="p">,</span><span class="s2">&quot;MRO&quot;</span><span class="p">],</span>
 </span><span id="States.__init__-165"><a href="#States.__init__-165"><span class="linenos">165</span></a>            <span class="p">]</span> <span class="k">if</span> <span class="n">with_canada</span> <span class="k">else</span> <span class="p">[]</span>
 </span><span id="States.__init__-166"><a href="#States.__init__-166"><span class="linenos">166</span></a>            <span class="p">)</span> <span class="o">+</span> <span class="p">([</span>
-</span><span id="States.__init__-167"><a href="#States.__init__-167"><span class="linenos">167</span></a>            <span class="p">]</span> <span class="k">if</span> <span class="n">with_mexico</span> <span class="k">else</span> <span class="p">[</span>
-</span><span id="States.__init__-168"><a href="#States.__init__-168"><span class="linenos">168</span></a>                <span class="p">[</span><span class="s2">&quot;Mexico&quot;</span><span class="p">,</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span><span class="s2">&quot;M0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">8.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;WECC&quot;</span><span class="p">,</span><span class="s2">&quot;WECC|MFEC&quot;</span><span class="p">],</span>
-</span><span id="States.__init__-169"><a href="#States.__init__-169"><span class="linenos">169</span></a>                <span class="p">]),</span>
-</span><span id="States.__init__-170"><a href="#States.__init__-170"><span class="linenos">170</span></a>            <span class="p">)</span>
+</span><span id="States.__init__-167"><a href="#States.__init__-167"><span class="linenos">167</span></a>                <span class="p">[</span><span class="s2">&quot;Mexico&quot;</span><span class="p">,</span><span class="s2">&quot;MX&quot;</span><span class="p">,</span><span class="s2">&quot;M0&quot;</span><span class="p">,</span><span class="o">-</span><span class="mf">8.0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;WECC&quot;</span><span class="p">,</span><span class="s2">&quot;WECC|MFEC&quot;</span><span class="p">],</span>
+</span><span id="States.__init__-168"><a href="#States.__init__-168"><span class="linenos">168</span></a>                <span class="p">]</span> <span class="k">if</span> <span class="n">with_mexico</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span id="States.__init__-169"><a href="#States.__init__-169"><span class="linenos">169</span></a>            <span class="p">),</span>
+</span><span id="States.__init__-170"><a href="#States.__init__-170"><span class="linenos">170</span></a>        <span class="p">)</span>
 </span><span id="States.__init__-171"><a href="#States.__init__-171"><span class="linenos">171</span></a>        <span class="k">if</span> <span class="n">use_index</span><span class="p">:</span>
 </span><span id="States.__init__-172"><a href="#States.__init__-172"><span class="linenos">172</span></a>            <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">use_index</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="States.__init__-173"><a href="#States.__init__-173"><span class="linenos">173</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">())</span>
@@ -688,9 +688,9 @@ are all listed, seperated by <code>"|"</code>.</p></li>
 <h1 id="arguments">Arguments</h1>
 
 <ul>
-<li><p><code>with_territories</code>: include US territories (PR and VI)</p></li>
-<li><p><code>with_canada</code>: include Canadian provinces (provinces listed under "STATE"--sorry)</p></li>
-<li><p><code>with_mexico</code>: include Baja California (listed under "STATE" as <code>"MEXICO"</code>)</p></li>
+<li><p><code>with_territories</code>: append US territories (PR and VI)</p></li>
+<li><p><code>with_canada</code>: append Canadian provinces (provinces listed under "STATE"--sorry)</p></li>
+<li><p><code>with_mexico</code>: append Baja California (listed under "STATE" as <code>"MEXICO"</code>)</p></li>
 <li><p><code>use_index</code>: specify index to initially set</p></li>
 </ul>
 </div>
