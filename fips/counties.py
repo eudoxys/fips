@@ -1,7 +1,8 @@
 """US county data"""
 
-import pandas as pd
 from io import StringIO
+
+import pandas as pd
 
 class County:
     """Get county data
@@ -20,7 +21,7 @@ class County:
 
         try:
             self.data = Counties().set_index(keys).loc[[values]].reset_index()
-        except KeyError as err:
+        except KeyError:
             self.data = None
         if self.data is None or len(self.data) > 1:
             raise KeyError(f"{kwargs=} is not a valid unique key")
@@ -84,6 +85,7 @@ class Counties(pd.DataFrame):
 
         # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
         data = pd.read_csv(
+            # pylint: disable=too-many-lines
             StringIO("""
 ST,FIPS,COUNTY,LAT,LON,GEOHASH,TZOFFSET,DST,SYSTEM,RO
 AL,01001,Autauga,32.532237,-86.64644,djf3h6,-6,1,EAST,SERC
@@ -3265,4 +3267,3 @@ if __name__ == '__main__':
     # print(County(ST="CA",COUNTY="Alameda").to_dict())
 
     # print(Counties("DC"))
-

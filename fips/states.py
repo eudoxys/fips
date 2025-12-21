@@ -25,7 +25,7 @@ class State:
                 )\
                 .set_index(keys).loc[values]\
                 .reset_index()
-        except KeyError as err:
+        except KeyError:
             self.data = None
         if self.data is None or len(self.data) > 1:
             raise KeyError(f"{kwargs=} is not a valid unique key")
