@@ -73,7 +73,14 @@ class Counties(pd.DataFrame):
         state:str=None,
         use_index:str|list[str]=None
         ):
-        """Construct a data frame of US counties"""
+        """Construct a data frame of US counties
+
+        # Arguments
+
+        - `state`: state abbreviation
+
+        - `use_index`: use the specified column(s) as the index
+        """
 
         # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
         data = pd.read_csv(
@@ -3237,12 +3244,11 @@ WY,56045,Weston,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC
                 },
             )
 
-        if state is None:
-            if use_index:
-                data.set_index(use_index,inplace=True)
-            super().__init__(data.sort_index())
-        else:
-            super().__init__(data.set_index("ST").loc[[state]].reset_index())
+        if not state is None:
+            data = data.set_index("ST").loc[[state]].reset_index()
+        if use_index:
+            data.set_index(use_index,inplace=True)
+        super().__init__(data.sort_index())
 
 if __name__ == '__main__':
 
