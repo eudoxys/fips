@@ -44,7 +44,7 @@ def main(*args:list[str]) -> int:
         parser.add_argument("locale",nargs="+")
         parser.add_argument("--warning",
             action="store_true",
-            help="enable warning messages from python")
+            help="disable warning messages from python")
         parser.add_argument("--debug",
             action="store_true",
             help="enable debug traceback on exceptions")
@@ -60,6 +60,8 @@ def main(*args:list[str]) -> int:
                 flush=True,
                 file=sys.stderr,
                 )
+        else:
+            warnings.showwarning = lambda *x:None
 
         # handle help request
         if args.locale[0] == "help":
@@ -77,7 +79,7 @@ def main(*args:list[str]) -> int:
             case 2:
                 result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[*args.locale]
             case "_":
-                raise f"{locale=} is invalid"
+                raise ValueError(f"{args.locale=} is invalid")
 
         print(result)
         return E_OK
