@@ -69,7 +69,11 @@ def main(*args:list[str]) -> int:
         # get locale data
         match len(args.locale):
             case 1:
-                result = States().set_index("ST").sort_index().loc[args.locale]
+                result = States(
+                    with_territories=True,
+                    with_canada=True,
+                    with_mexico=True,
+                    ).set_index("ST").sort_index().loc[args.locale]
             case 2:
                 result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[*args.locale]
             case "_":
