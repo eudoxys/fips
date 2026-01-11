@@ -1,4 +1,18 @@
-"""US states data"""
+"""US states data
+
+Examples
+========
+
+To get the state data for California use the command
+
+    from fips import State
+    State(ST="CA")
+
+which outputs
+
+    {'ST': 'CA', 'STATE': 'California', 'FIPS': '06', 'TZOFFSET': -8.0, 'DST': 1, 'SYSTEM': 'WECC', 'RO': 'WECC'}
+
+"""
 
 import pandas as pd
 
@@ -47,32 +61,34 @@ class State:
 class States(pd.DataFrame):
     """US states dataframe
 
-    # Columns
+    Columns
+    -------
 
-    - `STATE`: state name
+      - `STATE`: state name
 
-    - `ST`: state abbreviation
+      - `ST`: state abbreviation
 
-    - `FIPS`: state FIPS code
+      - `FIPS`: state FIPS code
 
-    - `TZOFFSET`: state timezone offset
+      - `TZOFFSET`: state timezone offset
 
-    - `DST`: flag to indicate whether summer time is observed
+      - `DST`: flag to indicate whether summer time is observed
 
-    - `SYSTEM`: system interconnection name
+      - `SYSTEM`: system interconnection name
 
-    - `RO`: reliability organization name(s), split using `"|"`
+      - `RO`: reliability organization name(s), split using `"|"`
 
-    # Caveat
+    Caveat
+    ------
 
-    - Time zones and summer time are not uniformly observed in some states.
-      See `fips.counties.Counties` for a more granular determination of these
-      values.
+      - Time zones and summer time are not uniformly observed in some states.
+        See `fips.counties.Counties` for a more granular determination of
+        these values.
 
-    - Some states are in multiple systems and/or have multiple reliability
-      organizations. In such cases only the system that covers the major
-      population center(s) is provided, but the reliability organizations
-      are all listed, seperated by `"|"`.
+      - Some states are in multiple systems and/or have multiple reliability
+        organizations. In such cases only the system that covers the major
+        population center(s) is provided, but the reliability organizations
+        are all listed, seperated by `"|"`.
     """
     def __init__(self,
         with_territories:bool=False,
@@ -82,15 +98,18 @@ class States(pd.DataFrame):
         ):
         """Construct states data frame
 
-        # Arguments
+        Arguments
+        ---------
 
-        - `with_territories`: append US territories (PR and VI)
+          - `with_territories`: append US territories (PR and VI)
 
-        - `with_canada`: append Canadian provinces (provinces listed under "STATE"--sorry)
+          - `with_canada`: append Canadian provinces (provinces listed
+            under "STATE"--sorry)
 
-        - `with_mexico`: append Baja California (listed under "STATE" as `"MEXICO"`)
+          - `with_mexico`: append Baja California (listed under "STATE" as
+            `"MEXICO"`)
 
-        - `use_index`: specify index to initially set
+          - `use_index`: specify index to initially set
         """
         data = pd.DataFrame(
             columns=["STATE","ST","FIPS","TZOFFSET","DST","SYSTEM","RO"],

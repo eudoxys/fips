@@ -1,100 +1,106 @@
 """US state and county data
 
-# Usage
+Usage
+-----
 
     fips [OPTIONS ...] state [county]
 
-## Positional arguments
+Positional arguments
+--------------------
 
-- `state`: state abbreviation, e.g., `"CA"`
+  - `state`: state abbreviation, e.g., `"CA"`
 
-- `county`: county name, e.g., `"Alameda"`
+  - `county`: county name, e.g., `"Alameda"`
 
-## Options
+Optional arguments
+------------------
 
-- `--debug`: enable traceback on exceptions
+  - `--debug`: enable traceback on exceptions
 
-- `-f|--format FORMAT`: specify format. Valid formats are `table`(the default)
-  to output a human readable data frame format, or `csv` to output in machine
-  readable CSV format.
+  - `-f|--format FORMAT`: specify format. Valid formats are `table`(the default)
+    to output a human readable data frame format, or `csv` to output in machine
+    readable CSV format.
 
-- `--header`: disable CSV header output
+  - `--header`: disable CSV header output
 
-- `-h|--help`: get online documentation
+  - `-h|--help`: get online documentation
 
-- `--index`: disable CSV index output
+  - `--index`: disable CSV index output
 
-- `-o|--output`: specify CSV output filename (default is `/dev/stdout`)
+  - `-o|--output`: specify CSV output filename (default is `/dev/stdout`)
 
-- `--warning`: enable warning messages
+  - `--warning`: enable warning messages
 
-# Description
+Description
+-----------
 
 Gets state and county information based on Census Bureau FIPS codes.
 
 State data includes the following:
 
-- `STATE`: state name, e.g., `"California"`
+  - `STATE`: state name, e.g., `"California"`
 
-- `ST`: state abbreviation, e.g., `"CA"`
+  - `ST`: state abbreviation, e.g., `"CA"`
 
-- `FIPS`: state FIPS code, e.g., `"06"`
+  - `FIPS`: state FIPS code, e.g., `"06"`
 
-- `TZOFFSET`: state timezone offset (note that some states have more than one
-  timezone, in which case the largest population center timezone is used.)
+  - `TZOFFSET`: state timezone offset (note that some states have more than one
+    timezone, in which case the largest population center timezone is used.)
 
-- `DST`: flag to indicate whether summer-time is observed
+  - `DST`: flag to indicate whether summer-time is observed
 
-- `SYSTEM`: system interconnection name
+  - `SYSTEM`: system interconnection name
 
-- `RO`: reliability organization name(s)
+  - `RO`: reliability organization name(s)
 
 County data includes the following:
 
-- `ST`: state abbreviation, e.g., `"CA"`
+  - `ST`: state abbreviation, e.g., `"CA"`
 
-- `FIPS`: county FIPS code, e.g., `"06001"`
+  - `FIPS`: county FIPS code, e.g., `"06001"`
 
-- `COUNTY`: county name, e.g., `"Alameda"`. Note that only the name is
-  included--qualifiers such as "County", "Burrough", and "Parish" are not
-  included.
+  - `COUNTY`: county name, e.g., `"Alameda"`. Note that only the name is
+    included--qualifiers such as "County", "Burrough", and "Parish" are not
+    included.
 
-- `LAT`: county centroid latitude, e.g., `37.647139`
+  - `LAT`: county centroid latitude, e.g., `37.647139`
 
-- `LON`: county centroid longitude, e.g., `-121.912488`
+  - `LON`: county centroid longitude, e.g., `-121.912488`
 
-- `GEOHASH`: county centroid geohash, e.g., `9q9q1v`
+  - `GEOHASH`: county centroid geohash, e.g., `9q9q1v`
 
-# Command line examples
+Command line examples
+---------------------
 
-- Get California data
+  - Get California data
 
         fips CA
   
-  Outputs
+    Outputs
 
                  STATE FIPS  TZOFFSET  DST SYSTEM    RO
         ST                                             
         CA  California   06      -8.0    1   WECC  WECC
 
-- Get Alameda County CA data
+  - Get Alameda County CA data
 
         fips CA Alameda
 
-  Outputs
+    Outputs
 
                      FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
         ST COUNTY                                                                   
         CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC
 
-# Python examples
+Python examples
+---------------
 
-- Get WECC counties
+  - Get WECC counties
 
         from fips.counties import Counties
         print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
 
-  Outputs
+    Outputs
 
              FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO
         ST                                                                       
@@ -112,16 +118,16 @@ County data includes the following:
 
         [407 rows x 8 columns]    
 
-- Get California's FIPS code
+  - Get California's FIPS code
 
         from fips.states import State
         print(State(ST="CA").FIPS)
 
-  Outputs
+    Outputs
 
         06
 
-- Get list of states names indexed by state abbrevation
+  - Get list of states names indexed by state abbrevation
 
         from fips.states import States
         print(States().set_index("ST"))
@@ -140,21 +146,21 @@ County data includes the following:
         WI             Wisconsin
         WY               Wyoming
 
-- Get Alameda County's GEOHASH code
+  - Get Alameda County's GEOHASH code
 
         from fips.counties import County
         print(County(ST="CA",COUNTY="Alameda").GEOHASH)
 
-  Outputs
+    Outputs
 
         9q9q1v
 
-- Get counties geographic data by state and county name
+  - Get counties geographic data by state and county name
 
         from fips.counties import Counties
         print(Counties().set_index(["ST","COUNTY"])["LAT","LON","GEOHASH"])
 
-  Outputs
+    Outputs
 
                              LAT         LON GEOHASH
         ST COUNTY                                          
@@ -172,17 +178,18 @@ County data includes the following:
 
         [3142 rows x 4 columns]
 
-# Package information
+Package information
+-------------------
 
-- Source code: https://github.com/eudoxys/fips
+  - Source code: https://github.com/eudoxys/fips
 
-- Documentation: https://www.eudoxys.com/fips
+  - Documentation: https://www.eudoxys.com/fips
 
-- Issues: https://github.com/eudoxys/fips/issues
+  - Issues: https://github.com/eudoxys/fips/issues
 
-- License: https://github.com/eudoxys/fips/blob/main/LICENSE
+  - License: https://github.com/eudoxys/fips/blob/main/LICENSE
 
-- Dependencies: 
+  - Dependencies: 
 
     - [Pandas](https://pandas.pydata.org/docs/)
 

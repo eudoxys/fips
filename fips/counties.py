@@ -1,4 +1,28 @@
-"""US county data"""
+"""US county data
+
+Examples
+--------
+
+To get the county data for the WECC system use the command
+
+    Counties(use_index=["SYSTEM"],selection=["WECC"],set_index=["ST","COUNTY"])
+
+which outputs
+
+                  SYSTEM   FIPS        LAT         LON GEOHASH  TZOFFSET  DST    RO
+    ST COUNTY                                                                      
+    AZ Apache       WECC  04001  35.385084 -109.490172  9w61k3      -7.0    1  WECC
+       Cochise      WECC  04003  31.840129 -109.775163  9t9vnh      -7.0    0  WECC
+       Coconino     WECC  04005  35.829692 -111.773728  9w2ebd      -7.0    1  WECC
+       Gila         WECC  04007  33.789618 -110.811870  9w10nr      -7.0    0  WECC
+       Graham       WECC  04009  32.931828 -109.878310  9tcg7e      -7.0    0  WECC
+    ...              ...    ...        ...         ...     ...       ...  ...   ...
+    WY Sweetwater   WECC  56037  41.660328 -108.875677  9x6t42      -7.0    1  WECC
+       Teton        WECC  56039  44.048662 -110.426087  9xc6x4      -7.0    1  WECC
+       Uinta        WECC  56041  41.284726 -110.558947  9x36u5      -7.0    1  WECC
+       Washakie     WECC  56043  43.878831 -107.669052  9xg3tg      -7.0    1  WECC
+       Weston       WECC  56045  43.846213 -104.570020  9xv9km      -7.0    1  WECC
+"""
 
 from io import StringIO
 
@@ -42,45 +66,54 @@ class County:
 class Counties(pd.DataFrame):
     """US counties dataframe
 
-    # Columns
+    Columns
+    -------
 
-    - `ST`: state abbreviation
+      - `ST`: state abbreviation
 
-    - `FIPS`: county FIPS code
+      - `FIPS`: county FIPS code
 
-    - `COUNTY`: county/parish/burrough name
+      - `COUNTY`: county/parish/burrough name
     
-    - `LAT`: county centroid latitude
+      - `LAT`: county centroid latitude
 
-    - `LON`: county centroid longitude
+      - `LON`: county centroid longitude
 
-    - `GEOHASH`: county centroid geohash
+      - `GEOHASH`: county centroid geohash
 
-    - `TZOFFSET`: state timezone offset
+      - `TZOFFSET`: state timezone offset
 
-    - `DST`: flag to indicate whether summer time is observed
+      - `DST`: flag to indicate whether summer time is observed
 
-    - `SYSTEM`: system interconnection name
+      - `SYSTEM`: system interconnection name
 
-    - `RO`: reliability organization name
+      - `RO`: reliability organization name
 
-    # Caveat
+    Caveat
+    ------
 
-    - Some counties located along timezone boundaries may be split across two
-      timezones. In such cases, the timezone selected covers the majority of
-      the county's land area.
+      - Some counties located along timezone boundaries may be split across
+        two timezones. In such cases, the timezone selected covers the
+        majority of the county's land area.
     """
     def __init__(self,
         state:str=None,
-        use_index:str|list[str]=None
+        use_index:str|list[str]=None,
+        selection:list=None,
+        set_index:str|list[str]=None
         ):
         """Construct a data frame of US counties
 
-        # Arguments
+        Arguments
+        ---------
 
-        - `state`: state abbreviation
+          - `state`: state abbreviation
 
-        - `use_index`: use the specified column(s) as the index
+          - `use_index`: use the specified column(s) as the index
+
+          - `selection`: row selection based on `use_index` 
+
+          - `set_index`: index to to set on data frame after row selection
         """
 
         # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
@@ -3250,6 +3283,11 @@ WY,56045,Weston,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC
             data = data.set_index("ST").loc[[state]].reset_index()
         if use_index:
             data.set_index(use_index,inplace=True)
+        if selection:
+            data = data.loc[selection]
+        if set_index:
+            data.reset_index(inplace=True)
+            data.set_index(set_index,inplace=True)
         super().__init__(data.sort_index())
 
 if __name__ == '__main__':
@@ -3258,7 +3296,7 @@ if __name__ == '__main__':
     # pd.options.display.max_rows = None
     # pd.options.display.max_columns = None
 
-    print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
+    print(Counties(use_index=["SYSTEM"],selection=["WECC"],set_index=["ST","COUNTY"]))
 
     # print(Counties("CA").set_index(["ST","COUNTY"]))
 

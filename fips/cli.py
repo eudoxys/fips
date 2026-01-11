@@ -21,13 +21,15 @@ E_SYNTAX = 2
 def main(*args:list[str]) -> int:
     """State and county data accessor main command line processor
 
-    # Argument
+    Arguments
+    ---------
 
-    - `*args`: command line arguments (`None` is `sys.argv`)
+      - `*args`: command line arguments (`None` is `sys.argv`)
 
-    # Returns
+    Returns
+    -------
 
-    - `int`: return/exit code (see `E_*` codes)
+      - `int`: return/exit code (see `E_*` codes)
     """
     # pylint: disable=too-many-return-statements
     try:
