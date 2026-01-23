@@ -78,9 +78,9 @@ Command line examples
   
     Outputs
 
-                 STATE FIPS  TZOFFSET  DST SYSTEM    RO
+                 STATE FIPS  TZOFFSET  DST SYSTEM    RO REGION
         ST                                             
-        CA  California   06      -8.0    1   WECC  WECC
+        CA  California   06      -8.0    1   WECC  WECC  CAISO
 
   - Get Alameda County CA data
 
@@ -88,39 +88,35 @@ Command line examples
 
     Outputs
 
-                     FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
+                     FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO REGION
         ST COUNTY                                                                   
-        CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC
+        CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC  CAISO
 
 Python examples
 ---------------
 
-  - Get WECC counties
+  - Get California ISO counties
 
-        from fips.counties import Counties
-        print(Counties(use_index=["SYSTEM","ST"]).loc["WECC"])
+        from fips import Counties
+        print(Counties(use_index=["REGION"]).loc["CAISO"])
 
     Outputs
 
-             FIPS      COUNTY        LAT         LON GEOHASH  TZOFFSET  DST    RO
-        ST                                                                       
-        AZ  04001      Apache  35.385084 -109.490172  9w61k3      -7.0    1  WECC
-        AZ  04003     Cochise  31.840129 -109.775163  9t9vnh      -7.0    0  WECC
-        AZ  04005    Coconino  35.829692 -111.773728  9w2ebd      -7.0    1  WECC
-        AZ  04007        Gila  33.789618 -110.811870  9w10nr      -7.0    0  WECC
-        AZ  04009      Graham  32.931828 -109.878310  9tcg7e      -7.0    0  WECC
-        ..    ...         ...        ...         ...     ...       ...  ...   ...
-        WY  56037  Sweetwater  41.660328 -108.875677  9x6t42      -7.0    1  WECC
-        WY  56039       Teton  44.048662 -110.426087  9xc6x4      -7.0    1  WECC
-        WY  56041       Uinta  41.284726 -110.558947  9x36u5      -7.0    1  WECC
-        WY  56043    Washakie  43.878831 -107.669052  9xg3tg      -7.0    1  WECC
-        WY  56045      Weston  43.846213 -104.570020  9xv9km      -7.0    1  WECC
-
-        [407 rows x 8 columns]    
+                ST           COUNTY   FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
+        REGION                                                                                       
+        CAISO   CA         Monterey   6053  36.240107 -121.315572  9q3wpm      -8.0    1   WECC  WECC
+        CAISO   CA            Marin   6041  38.051817 -122.745974  9qb8qz      -8.0    1   WECC  WECC
+        CAISO   CA         Mariposa   6043  37.570030 -119.912861  9qdtxr      -8.0    1   WECC  WECC
+        .
+        .
+        .
+        CAISO   CA       Santa Cruz   6087  37.012488 -122.007205  9q94x9      -8.0    1   WECC  WECC
+        CAISO   CA    Santa Barbara   6083  34.537057 -120.039973  9q4skr      -8.0    1   WECC  WECC
+        CAISO   CA      Santa Clara   6085  37.220695 -121.690510  9q97wz      -8.0    1   WECC  WECC
 
   - Get California's FIPS code
 
-        from fips.states import State
+        from fips import State
         print(State(ST="CA").FIPS)
 
     Outputs
@@ -129,7 +125,7 @@ Python examples
 
   - Get list of states names indexed by state abbrevation
 
-        from fips.states import States
+        from fips import States
         print(States().set_index("ST"))
 
   Outputs
@@ -148,7 +144,7 @@ Python examples
 
   - Get Alameda County's GEOHASH code
 
-        from fips.counties import County
+        from fips import County
         print(County(ST="CA",COUNTY="Alameda").GEOHASH)
 
     Outputs
@@ -157,7 +153,7 @@ Python examples
 
   - Get counties geographic data by state and county name
 
-        from fips.counties import Counties
+        from fips import Counties
         print(Counties().set_index(["ST","COUNTY"])["LAT","LON","GEOHASH"])
 
     Outputs

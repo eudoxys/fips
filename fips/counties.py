@@ -5,23 +5,25 @@ Examples
 
 To get the county data for the WECC system use the command
 
-    Counties(use_index=["SYSTEM"],selection=["WECC"],set_index=["ST","COUNTY"])
+    from fips import Counties
+    print(Counties(use_index=["SYSTEM"],selection=["WECC"],set_index=["ST","COUNTY"]))
+
 
 which outputs
 
-                  SYSTEM   FIPS        LAT         LON GEOHASH  TZOFFSET  DST    RO
-    ST COUNTY                                                                      
-    AZ Apache       WECC  04001  35.385084 -109.490172  9w61k3      -7.0    1  WECC
-       Cochise      WECC  04003  31.840129 -109.775163  9t9vnh      -7.0    0  WECC
-       Coconino     WECC  04005  35.829692 -111.773728  9w2ebd      -7.0    1  WECC
-       Gila         WECC  04007  33.789618 -110.811870  9w10nr      -7.0    0  WECC
-       Graham       WECC  04009  32.931828 -109.878310  9tcg7e      -7.0    0  WECC
-    ...              ...    ...        ...         ...     ...       ...  ...   ...
-    WY Sweetwater   WECC  56037  41.660328 -108.875677  9x6t42      -7.0    1  WECC
-       Teton        WECC  56039  44.048662 -110.426087  9xc6x4      -7.0    1  WECC
-       Uinta        WECC  56041  41.284726 -110.558947  9x36u5      -7.0    1  WECC
-       Washakie     WECC  56043  43.878831 -107.669052  9xg3tg      -7.0    1  WECC
-       Weston       WECC  56045  43.846213 -104.570020  9xv9km      -7.0    1  WECC
+                  SYSTEM   FIPS        LAT  ...  DST    RO     REGION
+    ST COUNTY                               ...                      
+    AZ Apache       WECC   4001  35.385084  ...    1  WECC  SOUTHWEST
+       Cochise      WECC   4003  31.840129  ...    0  WECC  SOUTHWEST
+       Coconino     WECC   4005  35.829692  ...    1  WECC  SOUTHWEST
+       Gila         WECC   4007  33.789618  ...    0  WECC  SOUTHWEST
+       Graham       WECC   4009  32.931828  ...    0  WECC  SOUTHWEST
+    ...              ...    ...        ...  ...  ...   ...        ...
+    WY Sweetwater   WECC  56037  41.660328  ...    1  WECC  NORTHWEST
+       Teton        WECC  56039  44.048662  ...    1  WECC  NORTHWEST
+       Uinta        WECC  56041  41.284726  ...    1  WECC  NORTHWEST
+       Washakie     WECC  56043  43.878831  ...    1  WECC  NORTHWEST
+       Weston       WECC  56045  43.846213  ...    1  WECC  NORTHWEST
 
 Caveat
 ------
@@ -3302,9 +3304,9 @@ WY,Weston,56045,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC,NORTHWEST
 
 if __name__ == '__main__':
 
-    pd.options.display.width = None
-    pd.options.display.max_rows = None
-    pd.options.display.max_columns = None
+    # pd.options.display.width = None
+    # pd.options.display.max_rows = None
+    # pd.options.display.max_columns = None
 
     print(Counties(use_index=["SYSTEM"],selection=["WECC"],set_index=["ST","COUNTY"]))
 
