@@ -237,4 +237,5 @@ for state,spec in exceptions.items():
             # print(county,state,"...",counties.loc[(state,county),"REGION"].values[0],"-->",region)
             counties.loc[(state,county),"REGION"] = region
 
+counties.FIPS = [f"{int(x):05d}" for x in counties.FIPS]
 print(counties.to_csv())

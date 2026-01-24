@@ -3300,6 +3300,7 @@ WY,Weston,56045,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC,NORTHWEST
         if set_index:
             data.reset_index(inplace=True)
             data.set_index(set_index,inplace=True)
+        data.FIPS = [f"{int(x):05d}" for x in data.FIPS]
         super().__init__(data.sort_index())
 
 if __name__ == '__main__':
