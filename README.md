@@ -99,3 +99,7 @@ See https://www.eudoxys.com/fips.
            Weston      56045  43.846213 -104.570020  9xv9km      -7.0    1   WECC  WECC
 
         [3142 rows x 8 columns]
+
+## Acknowledgments
+
+- This material is based on work supported by the U.S. Department of Energy’s Office of Electricity through a grant from the Grid Controls and Communications Division
