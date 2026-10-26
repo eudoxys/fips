@@ -24,8 +24,33 @@ Description
 
 Each county's `REGION` is the primary region of its state, given in
 `STATE_REGIONS`, unless the county is listed in `COUNTY_EXCEPTIONS`. Only
-California and Nevada have county-level exceptions; see the
+California, Illinois, and Nevada have county-level exceptions; see the
 `fips.counties` caveats and `fips/_data/README.md`.
+
+Region scheme
+-------------
+
+The regions are FERC's electric power market regions (FERC, "Electric
+Power Markets: National Overview",
+https://www.ferc.gov/industries-data/market-assessments/electric-power-markets):
+the seven RTO/ISO markets (`CAISO`, `ERCOT`, `ISO-NE`, `MISO`, `NYISO`,
+`PJM`, `SPP`) and the three non-RTO regions (`NORTHWEST`, `SOUTHEAST`,
+`SOUTHWEST`). FERC's Northwest is the Northwest Power Pool area (WA, OR,
+ID, MT, WY, UT, northern NV, a small part of northern CA); its Southwest
+is AZ, NM, southern NV, and the Rocky Mountain Power Area (CO). Three
+additions are not FERC market regions: `ALASKA` and `HAWAII`, which are
+outside the lower-48 markets, and `IID` and `LADWP`, the two large
+California balancing authorities outside CAISO.
+
+Assignment rule
+---------------
+
+A state's primary region, and a county's region, is the region that
+serves the majority of its population (equivalently, of its retail
+load), not of its land area. A state is split into county exceptions
+only where a large share of its population is in another region; small
+pockets of another region are ignored, so a state's or county's region
+does not describe every customer in it.
 
 The script reads and writes the source file `fips/counties.py` next to
 this folder, not the installed package, and needs only the Python standard
@@ -47,7 +72,7 @@ COUNTIES_PY = pathlib.Path(__file__).resolve().parents[1] / "counties.py"
 """Source file holding the embedded county table"""
 
 STATE_REGIONS = {
-    "AL": "MISO",
+    "AL": "SOUTHEAST", # Alabama Power (Southern Co.) and TVA, not MISO (#8)
     "AK": "ALASKA",
     "AZ": "SOUTHWEST",
     "AR": "MISO",
@@ -64,18 +89,18 @@ STATE_REGIONS = {
     "IN": "MISO",
     "IA": "MISO",
     "KS": "SPP",
-    "KY": "PJM",
+    "KY": "PJM", # EKPC, Kentucky Power, Duke KY; LG&E/KU and TVA are non-RTO (see #8)
     "LA": "MISO",
     "ME": "ISO-NE",
     "MD": "PJM",
     "MA": "ISO-NE",
     "MI": "MISO",
     "MN": "MISO",
-    "MS": "MISO",
+    "MS": "MISO", # Entergy Mississippi and Cooperative Energy; Southern Co. and TVA in part
     "MO": "MISO",
     "MT": "NORTHWEST",
     "NE": "SPP",
-    "NV": "NORTHWEST",
+    "NV": "NORTHWEST", # Sierra Pacific (north); see COUNTY_EXCEPTIONS for the south
     "NH": "ISO-NE",
     "NJ": "PJM",
     "NM": "SOUTHWEST",
@@ -91,7 +116,7 @@ STATE_REGIONS = {
     "SD": "SPP",
     "TN": "SOUTHEAST",
     "TX": "ERCOT",
-    "UT": "SOUTHWEST",
+    "UT": "NORTHWEST", # PacifiCorp East; FERC places Utah in the Northwest (#8)
     "VT": "ISO-NE",
     "VA": "PJM",
     "WA": "NORTHWEST",
@@ -103,18 +128,42 @@ STATE_REGIONS = {
 
 COUNTY_EXCEPTIONS = {
     "CA": {
+        # PacifiCorp and Liberty Utilities (NV Energy area), not CAISO
         "Del Norte": "NORTHWEST",
         "Siskiyou": "NORTHWEST",
         "Modoc": "NORTHWEST",
         "Lassen": "NORTHWEST",
         "Alpine": "NORTHWEST",
-        "Mono": "NORTHWEST",
+        # LADWP, Burbank, and Glendale; see the note on Los Angeles in #8
         "Los Angeles": "LADWP",
-        "Inyo": "IID",
+        # Imperial Irrigation District serves the Imperial Valley; Inyo
+        # (SCE), Mono (SCE at Mammoth Lakes), and Riverside (SCE and
+        # Riverside Public Utilities) are majority CAISO (#8)
         "Imperial": "IID",
-        "Riverside": "IID",
+    },
+    "IL": {
+        # ComEd (northern Illinois, including Chicago) is in PJM; the rest
+        # of the state (Ameren Illinois) is in MISO (#8)
+        "Boone": "PJM",
+        "Cook": "PJM",
+        "DeKalb": "PJM",
+        "DuPage": "PJM",
+        "Grundy": "PJM",
+        "Kane": "PJM",
+        "Kankakee": "PJM",
+        "Kendall": "PJM",
+        "LaSalle": "PJM",
+        "Lake": "PJM",
+        "Lee": "PJM",
+        "McHenry": "PJM",
+        "Ogle": "PJM",
+        "Will": "PJM",
+        "Winnebago": "PJM",
     },
     "NV": {
+        # Nevada Power (Las Vegas) is in FERC's Southwest (#8)
+        "Clark": "SOUTHWEST",
+        # Valley Electric Association joined CAISO in 2013
         "Esmeralda": "CAISO",
         "Nye": "CAISO",
     },
