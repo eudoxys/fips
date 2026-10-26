@@ -61,12 +61,13 @@ pip install --upgrade pip && pip install -e . pytest
 pytest
 python3 fips/_data/build_counties.py --check
 python .github/check_manifest.py
-pdoc fips '!fips._.*' -o docs --math --mermaid   # as in deploy-pages.yaml
+make docs      # pdoc into docs/, as in deploy-pages.yaml
+make test      # same as the venv + pytest steps above
 ```
 
 Everything is fast and offline; the full suite runs in seconds. CI
 (`validate.yaml`) installs non-editable and runs pylint (informational) on
-`fips/*.py` and pytest on Python 3.11-3.14. There is no `Makefile` yet.
+`fips/*.py` and pytest on Python 3.11-3.14.
 
 ## Known rough edges (don't "fix" silently; mention or ask)
 

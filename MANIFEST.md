@@ -56,6 +56,7 @@ Update this file in the same PR that adds, moves, or deletes a file.
 | `LICENSE` | MIT | |
 | `pyproject.toml` | packaging, pytest settings | version here |
 | `requirements.txt` | dependencies | |
+| `Makefile` | `make docs`, `make test` | used by `deploy-pages.yaml` |
 | `.gitignore` | | |
 | `.gitattributes` | | |
 | `.github/workflows/validate.yaml` | CI: pylint, pytest | |

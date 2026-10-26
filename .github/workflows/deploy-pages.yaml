@@ -6,6 +6,7 @@ on:
     # pdoc reads fips/__init__.py and the public modules' docstrings
     paths:
       - "fips/*.py"
+      - "Makefile"
       - "requirements.txt"
       - "pyproject.toml"
       - ".github/workflows/deploy-pages.yaml"
@@ -35,18 +36,10 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: requirements.txt
-      - name: Install package and pdoc
-        run: |
-          python -m pip install --upgrade pip
-          pip install pdoc .
-      # Private modules (fips._*) are excluded: pdoc would import them,
-      # and they are not public API.
+      # `make docs` is the same command used locally (see Makefile);
+      # private modules (fips._*) are not documented.
       - name: Create docs
-        run: >-
-          pdoc fips '!fips._.*' -o docs
-          --logo "https://github.com/eudoxys/.github/blob/main/eudoxys_banner.png?raw=true"
-          --logo-link "https://www.eudoxys.com/"
-          --math --mermaid
+        run: make docs
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

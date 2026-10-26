@@ -6,7 +6,7 @@
 
 - [ ] Run `.github/check_manifest.py` in CI
 
-- [ ] Add `Makefile` with `make docs`
+- [x] Add `Makefile` with `make docs` (#13)
 
 # Data
 
@@ -30,4 +30,4 @@
 
 - [ ] Bring docstring and README examples up to date with real output (#10)
 
-- [ ] Modernize CI and publish docs from Actions (#13)
+- [x] Modernize CI and publish docs from Actions (#13)

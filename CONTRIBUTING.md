@@ -80,8 +80,7 @@ taking it.
    docstring and example output, the package docstring, and the README.
    Check the documentation builds with
 
-       pip install pdoc
-       pdoc ./fips '!fips._.*' -o docs --math --mermaid
+       make docs
 
    (`docs/` is ignored; the published site is built from `main` by the
    Documentation workflow.)
