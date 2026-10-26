@@ -77,8 +77,10 @@ Everything is fast and offline; the full suite runs in seconds. CI
 
 - County vintage predates the 2019 (Alaska) and 2022 (Connecticut) Census
   changes, and the table has no recorded source (#7).
-- Several `REGION` assignments look wrong (e.g. Riverside CA as `IID`)
-  and have no source (#8). Only CA and NV have county-level regions.
+- `REGION` follows FERC's market regions by majority of population
+  (source and rule in `fips/_data/README.md`, #8). Only CA, IL, and NV
+  have county-level regions; KY, MS and other split states use one
+  region, and `CA Los Angeles` as `LADWP` is pending review.
 - Tests live in `fips/_tests/tests.py` (unittest style), not
   `fips/_test/` (#12). Docstring and README examples are out of date
   (#10).

@@ -12,7 +12,7 @@
 
 - [ ] Update county vintage to current Census and record provenance (#7)
 
-- [ ] Review `REGION` assignments and cite sources (#8)
+- [x] Review `REGION` assignments and cite sources (#8)
 
 - [x] Document non-US and non-NERC codes in `States`; add `COUNTRY` (see `fips/states.py`, #16)
 
