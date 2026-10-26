@@ -78,7 +78,13 @@ taking it.
 
 5. If you change a public class, function, argument, or output, update its
    docstring and example output, the package docstring, and the README.
-   Check the documentation builds with `make docs`.
+   Check the documentation builds with
+
+       pip install pdoc
+       pdoc ./fips '!fips._.*' -o docs --math --mermaid
+
+   (`docs/` is ignored; the published site is built from `main` by the
+   Documentation workflow.)
 6. Don't commit caches, downloaded data, or generated output. Changes to
    curated data must include the script that produces them and an updated
    data README.
