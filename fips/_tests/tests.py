@@ -1,6 +1,8 @@
 """Run FIPS tests"""
 
+import copy
 import io
+import pickle
 import contextlib
 import importlib.util
 import pathlib
@@ -187,6 +189,48 @@ class TestStates(unittest.TestCase):
         self.assertEqual(result.returncode,0,
             f"run `python3 {script} --write`:\n{result.stdout}{result.stderr}")
         self.assertEqual(set(build_regions(script)) - set(fips.counties.REGIONS),set())
+
+class TestIssue9(unittest.TestCase):
+    """`State`/`County` attribute access, copy, pickle and repr (issue #9)"""
+
+    def objects(self):
+        return [fips.states.State(ST="CA"),
+            fips.counties.County(ST="CA",COUNTY="Alameda")]
+
+    def test_missing_attribute(self):
+        for obj in self.objects():
+            with self.subTest(obj=obj):
+                self.assertFalse(hasattr(obj,"NO_SUCH_COLUMN"))
+                self.assertIsNone(getattr(obj,"NO_SUCH_COLUMN",None))
+                with self.assertRaises(AttributeError):
+                    obj.NO_SUCH_COLUMN # pylint: disable=pointless-statement
+
+    def test_copy_pickle(self):
+        for obj in self.objects():
+            for dup in [copy.copy(obj),copy.deepcopy(obj),
+                    pickle.loads(pickle.dumps(obj))]:
+                with self.subTest(obj=obj,dup=type(dup)):
+                    self.assertIsInstance(dup,type(obj))
+                    self.assertEqual(dup.to_dict(),obj.to_dict())
+
+    def test_county_FIPS(self):
+        test = fips.counties.County(FIPS="06001")
+        self.assertEqual(test.ST,"CA")
+        self.assertEqual(test.COUNTY,"Alameda")
+        with self.assertRaises(KeyError):
+            fips.counties.County(FIPS="99999")
+
+    def test_repr_eval(self):
+        namespace = {"State":fips.states.State,
+            "County":fips.counties.County}
+        self.assertEqual(repr(fips.states.State(ST="CA")),"State(ST='CA')")
+        self.assertEqual(repr(fips.counties.County(ST="CA",COUNTY="Alameda")),
+            "County(FIPS='06001')")
+        for obj in self.objects():
+            with self.subTest(obj=obj):
+                self.assertEqual(
+                    eval(repr(obj),namespace).to_dict(), # pylint: disable=eval-used
+                    obj.to_dict())
 
 class TestCLI(unittest.TestCase):
 

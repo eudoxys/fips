@@ -73,8 +73,7 @@ Everything is fast and offline; the full suite runs in seconds. CI
 - `States` codes for Canada/Mexico and `NERC` for AK/HI are undocumented
   (#16).
 - `State`/`County` rebuild and re-parse the whole table on every call
-  (#15); their `__getattr__` raises `KeyError` and recurses on
-  copy/pickle (#9).
+  (#15).
 - Tests live in `fips/_tests/tests.py` (unittest style), not
   `fips/_test/` (#12). CLI options don't follow Eudoxys conventions yet,
   e.g. no `-d` short form, `--warning` disables rather than enables
