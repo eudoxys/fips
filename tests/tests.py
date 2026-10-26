@@ -107,6 +107,15 @@ class TestStates(unittest.TestCase):
         self.assertEqual(test.SYSTEM,"WECC")
         self.assertEqual(test.RO,"WECC")
 
+    def test_counties_REGION_valid(self):
+        regions = set(fips.counties.Counties().REGION)
+        self.assertEqual(regions - set(fips.counties.REGIONS),set())
+
+    def test_counties_IA_REGION(self):
+        test = fips.counties.Counties("IA")
+        self.assertEqual(len(test),99)
+        self.assertEqual(set(test.REGION),{"MISO"})
+
 class TestCLI(unittest.TestCase):
 
     def run_cli(self,*args):
