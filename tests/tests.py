@@ -1,7 +1,11 @@
 """Run FIPS tests"""
 
+import io
+import contextlib
 import unittest
+import pandas as pd
 import fips
+import fips.cli
 
 class TestStates(unittest.TestCase):
 
@@ -88,6 +92,36 @@ class TestStates(unittest.TestCase):
         test = fips.counties.Counties("IA")
         self.assertEqual(len(test),99)
         self.assertEqual(set(test.REGION),{"MISO"})
+
+class TestCLI(unittest.TestCase):
+
+    def run_cli(self,*args):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), pd.option_context(
+                "display.width",None,"display.max_columns",None):
+            code = fips.cli.main(*args)
+        self.assertEqual(code,fips.cli.E_OK)
+        return out.getvalue().splitlines()
+
+    def test_cli_county_table(self):
+        lines = self.run_cli("CA","Alameda")
+        self.assertEqual(len(lines),3)
+        self.assertIn("FIPS",lines[0])
+        self.assertIn("GEOHASH",lines[0])
+        self.assertEqual(lines[1].split(),["ST","COUNTY"])
+        self.assertEqual(lines[2].split()[:3],["CA","Alameda","06001"])
+
+    def test_cli_county_csv(self):
+        lines = self.run_cli("-f","csv","CA","Alameda")
+        self.assertEqual(len(lines),2)
+        self.assertTrue(lines[0].startswith("ST,COUNTY,FIPS,LAT,LON,GEOHASH,"))
+        self.assertTrue(lines[1].startswith("CA,Alameda,06001,"))
+
+    def test_cli_state_csv(self):
+        lines = self.run_cli("-f","csv","CA")
+        self.assertEqual(len(lines),2)
+        self.assertTrue(lines[0].startswith("ST,STATE,FIPS,"))
+        self.assertTrue(lines[1].startswith("CA,California,06,"))
 
 if __name__ == "__main__":
     unittest.main()
