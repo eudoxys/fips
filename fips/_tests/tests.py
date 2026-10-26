@@ -2,10 +2,22 @@
 
 import io
 import contextlib
+import importlib.util
+import pathlib
+import subprocess
+import sys
 import unittest
 import pandas as pd
 import fips
 import fips.cli
+
+def build_regions(script:pathlib.Path) -> set[str]:
+    """Every region named by the county region build script"""
+    spec = importlib.util.spec_from_file_location("build_counties",script)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return set(module.STATE_REGIONS.values()).union(
+        *[set(x.values()) for x in module.COUNTY_EXCEPTIONS.values()])
 
 class TestStates(unittest.TestCase):
 
@@ -163,6 +175,18 @@ class TestStates(unittest.TestCase):
                 test = fips.counties.County(ST=st,COUNTY=f"{county} City")
                 self.assertEqual(test.FIPS,fips_city)
                 self.assertEqual(test.TYPE,"city")
+
+    def test_counties_REGION_reproducible(self):
+        # the embedded REGION column is what fips/_data/build_counties.py
+        # generates; it checks the source tree, so skip if not in a clone
+        script = pathlib.Path(__file__).resolve().parents[1] / "_data" / "build_counties.py"
+        if not script.exists():
+            self.skipTest(f"{script} not found")
+        result = subprocess.run([sys.executable,str(script),"--check"],
+            capture_output=True,text=True,check=False)
+        self.assertEqual(result.returncode,0,
+            f"run `python3 {script} --write`:\n{result.stdout}{result.stderr}")
+        self.assertEqual(set(build_regions(script)) - set(fips.counties.REGIONS),set())
 
 class TestCLI(unittest.TestCase):
 
