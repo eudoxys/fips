@@ -146,5 +146,12 @@ class TestCLI(unittest.TestCase):
         self.assertTrue(lines[0].startswith("ST,STATE,FIPS,"))
         self.assertTrue(lines[1].startswith("CA,California,06,"))
 
+    def test_cli_too_many_locale_args(self):
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code = fips.cli.main("CA","Alameda","X")
+        self.assertEqual(code,fips.cli.E_SYNTAX)
+        self.assertIn("expected STATE [COUNTY], got 3 arguments",err.getvalue())
+
 if __name__ == "__main__":
     unittest.main()
