@@ -191,5 +191,12 @@ Package information
 
 ---
 """
+
+try:
+    import importlib.metadata
+    __version__ = importlib.metadata.version("fips")
+except Exception: # pylint: disable=broad-exception-caught
+    __version__ = "dev"
+
 from fips.states import States, State
 from fips.counties import Counties, County
