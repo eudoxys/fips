@@ -104,8 +104,11 @@ def main(*args:list[str]) -> int:
                     ).set_index("ST").sort_index().loc[args.locale]
             case 2:
                 result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[*args.locale]
-            case "_":
-                raise ValueError(f"{args.locale=} is invalid")
+            case _:
+                print("ERROR [fips]: expected STATE [COUNTY], "
+                    f"got {len(args.locale)} arguments",
+                    file=sys.stderr)
+                return E_SYNTAX
 
         # print result using format
         match args.format:
@@ -117,8 +120,9 @@ def main(*args:list[str]) -> int:
                     index=args.index,
                     header=args.header,
                     )
-            case "_":
-                raise ValueError(f"{args.format} is invalid")
+            case _:
+                print(f"ERROR [fips]: {args.format} is not a valid format",
+                    file=sys.stderr)
                 return E_SYNTAX
 
         return E_OK

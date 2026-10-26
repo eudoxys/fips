@@ -1,7 +1,10 @@
 """Run FIPS tests"""
 
+import io
+import contextlib
 import unittest
 import fips
+import fips.cli
 
 class TestStates(unittest.TestCase):
 
@@ -79,6 +82,15 @@ class TestStates(unittest.TestCase):
         self.assertEqual(test.DST,1)
         self.assertEqual(test.SYSTEM,"WECC")
         self.assertEqual(test.RO,"WECC")
+
+class TestCli(unittest.TestCase):
+
+    def test_cli_too_many_locale_args(self):
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code = fips.cli.main("CA","Alameda","X")
+        self.assertEqual(code,fips.cli.E_SYNTAX)
+        self.assertIn("expected STATE [COUNTY], got 3 arguments",err.getvalue())
 
 if __name__ == "__main__":
     unittest.main()
