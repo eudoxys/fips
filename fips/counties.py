@@ -48,6 +48,7 @@ Caveat
 
 """
 
+import functools
 from io import StringIO
 
 import pandas as pd
@@ -92,7 +93,11 @@ class County:
 
         # Arguments 
 
-        -  `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`)
+        -  `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`
+           or `{FIPS="06001"}`)
+
+        The county table is parsed once per process and indexed once per
+        set of keys, so repeated lookups are fast (issue #15).
         """
         keys = list(kwargs.keys())
         values = list(kwargs.values())
@@ -100,7 +105,7 @@ class County:
         try:
             # a single key indexes by label, several by tuple of labels
             index = values if len(keys) == 1 else [tuple(values)]
-            self.data = Counties().set_index(keys).loc[index].reset_index()
+            self.data = _counties_by(*keys).loc[index].reset_index()
         except KeyError:
             self.data = None
         if self.data is None or len(self.data) > 1:
@@ -198,11 +203,27 @@ class Counties(pd.DataFrame):
 
           - `set_index`: index to to set on data frame after row selection
         """
+        data = _counties().copy()
+        if not state is None:
+            data = data.set_index("ST").loc[[state]].reset_index()
+        if use_index:
+            data = data.set_index(use_index)
+        if selection:
+            data = data.loc[selection]
+        if set_index:
+            data = data.reset_index().set_index(set_index)
+        super().__init__(data.sort_index())
 
-        # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
-        data = pd.read_csv(
-            # pylint: disable=too-many-lines
-            StringIO("""
+@functools.cache
+def _counties() -> pd.DataFrame:
+    """@private Parse the embedded county table, once per process (issue #15)
+
+    Callers must not modify the result; `Counties` takes a copy.
+    """
+    # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
+    data = pd.read_csv(
+        # pylint: disable=too-many-lines
+        StringIO("""
 ST,COUNTY,TYPE,FIPS,LAT,LON,GEOHASH,TZOFFSET,DST,SYSTEM,RO,REGION
 AK,Aleutians East,borough,2013,55.245044,-161.997477,b3uf39,-9,1,AK,,ALASKA
 AK,Aleutians West,census area,2016,51.948964,179.621188,zcpxx3,-10,1,AK,,ALASKA
@@ -3348,33 +3369,32 @@ WY,Washakie,county,56043,43.878831,-107.669052,9xg3tg,-7,1,WECC,WECC,NORTHWEST
 WY,Weston,county,56045,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC,NORTHWEST
 """
 ),
-            dtype={
-                "ST":str,
-                "FIPS":str,
-                "COUNTY":str,
-                "TYPE":str,
-                "LAT":float,
-                "LON":float,
-                "GEOHASH":str,
-                "TZOFFSET":float,
-                "DST":int,
-                "SYSTEM":str,
-                "RO":str,
-                },
-            )
+        dtype={
+            "ST":str,
+            "FIPS":str,
+            "COUNTY":str,
+            "TYPE":str,
+            "LAT":float,
+            "LON":float,
+            "GEOHASH":str,
+            "TZOFFSET":float,
+            "DST":int,
+            "SYSTEM":str,
+            "RO":str,
+            },
+        )
+    data["RO"] = data["RO"].fillna("") # AK and HI have no NERC entity
+    data["FIPS"] = [f"{int(x):05d}" for x in data.FIPS]
+    return data
 
-        data["RO"] = data["RO"].fillna("") # AK and HI have no NERC entity
-        if not state is None:
-            data = data.set_index("ST").loc[[state]].reset_index()
-        if use_index:
-            data.set_index(use_index,inplace=True)
-        if selection:
-            data = data.loc[selection]
-        if set_index:
-            data.reset_index(inplace=True)
-            data.set_index(set_index,inplace=True)
-        data.FIPS = [f"{int(x):05d}" for x in data.FIPS]
-        super().__init__(data.sort_index())
+@functools.cache
+def _counties_by(*keys:str) -> pd.DataFrame:
+    """@private County table indexed by `keys`, built once per set of keys
+
+    Raises `KeyError` if a key is not a column. Callers must not modify
+    the result; `County` selects rows from it, which makes a new frame.
+    """
+    return _counties().set_index(list(keys)).sort_index()
 
 if __name__ == '__main__':
 

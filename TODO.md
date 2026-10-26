@@ -20,7 +20,7 @@
 
 - [x] Fix `State`/`County` `__getattr__` `KeyError` and copy/pickle recursion (#9)
 
-- [ ] Parse the embedded tables once instead of on every call (#15)
+- [x] Parse the embedded tables once instead of on every call (#15)
 
 - [x] Align CLI options and error handling with Eudoxys conventions (see `fips/cli.py`, #11)
 
