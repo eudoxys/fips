@@ -78,7 +78,9 @@ def test_output_file_bad_folder(cli,tmp_path:pathlib.Path):
 def test_help_topic(cli):
     result = cli("help")
     assert result.code == E_OK
-    assert result.out.strip() == fips.cli.__doc__.strip()
+    assert "fips --help" in result.out
+    assert "https://www.eudoxys.com/fips" in result.out
+    assert len(result.out.splitlines()) == 1
 
 @pytest.mark.parametrize("args",[
     ["ZZ"],              # invalid state
