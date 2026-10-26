@@ -125,13 +125,13 @@ class States(pd.DataFrame):
                 ["District of Columbia","DC","11",-5.0,1,"EAST","RF"],
                 ["Florida","FL","12",-5.0,1,"EAST","SERC"],
                 ["Georgia","GA","13",-5.0,1,"EAST","SERC"],
-                ["Hawaii","HI","15",-9.0,0,"HI","NERC"],
+                ["Hawaii","HI","15",-10.0,0,"HI","NERC"],
                 ["Idaho","ID","16",-7.0,1,"WECC","WECC"],
                 ["Illinois","IL","17",-6.0,1,"EAST","SERC|RF|MRO"],
                 ["Indiana","IN","18",-5.0,1,"EAST","RF"],
                 ["Iowa","IA","19",-6.0,1,"EAST","MRO"],
                 ["Kansas","KS","20",-6.0,1,"EAST","MRO"],
-                ["Kentucky","KY","21",-6.0,1,"EAST","SERC"],
+                ["Kentucky","KY","21",-5.0,1,"EAST","SERC"],
                 ["Louisiana","LA","22",-6.0,1,"EAST","SERC"],
                 ["Maine","ME","23",-5.0,1,"EAST","NPCC"],
                 ["Maryland","MD","24",-5.0,1,"EAST","RF"],
@@ -166,8 +166,8 @@ class States(pd.DataFrame):
                 ["Wisconsin","WI","55",-6.0,1,"EAST","MRO|RF"],
                 ["Wyoming","WY","56",-7.0,1,"WECC","WECC"],
             ] + ([
-                ["Puerto Rico","PR","72",-4,0,"PR","PR"],
-                ["Virgin Islands","VI","78",-4,0,"VI","VI"],
+                ["Puerto Rico","PR","72",-4.0,0,"PR","PR"],
+                ["Virgin Islands","VI","78",-4.0,0,"VI","VI"],
                 ] if with_territories else []
             ) + ([
                 ["Alberta","AB","C0",-7.0,1,"WECC","WECC"],
@@ -179,7 +179,7 @@ class States(pd.DataFrame):
                 ["Ontario","ON","C6",-5.0,1,"EAST","NPCC"],
                 ["Prince Edward Island","PE","C7",-4.0,1,"EAST","NPCC"],
                 ["Quebec","QC","C8",-5.0,1,"QUEBEC","NPCC"],
-                ["Saskatchewan","SK","C9",-6.0,1,"EAST","MRO"],
+                ["Saskatchewan","SK","C9",-6.0,0,"EAST","MRO"],
             ] if with_canada else []
             ) + ([
                 ["Mexico","MX","M0",-8.0,1,"WECC","WECC|MFEC"],
