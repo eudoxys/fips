@@ -106,6 +106,34 @@ class TestStates(unittest.TestCase):
         self.assertEqual(fips.states.State(ST="KY").TZOFFSET,-5.0)
         self.assertEqual(fips.states.State(ST="SK").DST,0)
 
+    def test_states_issue_16(self):
+        data = fips.states.States(with_territories=True,
+            with_canada=True,with_mexico=True)
+        # every row has a country; only US rows have numeric FIPS codes
+        self.assertEqual(set(data.COUNTRY),{"USA","CAN","MEX"})
+        for _,row in data.iterrows():
+            with self.subTest(ST=row.ST):
+                self.assertEqual(row.FIPS.isdigit(),row.COUNTRY == "USA")
+        self.assertTrue(data.ST.is_unique)
+        self.assertTrue(data.FIPS.is_unique)
+        canada = data[data.COUNTRY=="CAN"]
+        self.assertEqual(sorted(canada.FIPS),[f"C{n}" for n in range(10)])
+        # Baja California is named as the state, not the country
+        bc = fips.states.State(ST="BCN")
+        self.assertEqual(bc.STATE,"Baja California")
+        self.assertEqual(bc.FIPS,"M0")
+        self.assertEqual(bc.COUNTRY,"MEX")
+        with self.assertRaises(KeyError):
+            fips.states.State(ST="MX")
+        # AK and HI are not in a NERC regional entity
+        for st in ["AK","HI"]:
+            with self.subTest(ST=st):
+                self.assertEqual(fips.states.State(ST=st).RO,"")
+                counties = fips.counties.Counties(st)
+                self.assertEqual(set(counties.RO),{""})
+        self.assertNotIn("NERC",set(data.RO))
+        self.assertNotIn("NERC",set(fips.counties.Counties().RO))
+
     def test_counties_ST_COUNTY(self):
         test = fips.counties.Counties("CA",use_index="COUNTY").loc["Alameda"]
         self.assertEqual(test.FIPS,"06001")
@@ -232,6 +260,62 @@ class TestIssue9(unittest.TestCase):
                 self.assertEqual(
                     eval(repr(obj),namespace).to_dict(), # pylint: disable=eval-used
                     obj.to_dict())
+
+class TestIssue15(unittest.TestCase):
+    """Tables are parsed once and lookups don't rebuild them (issue #15)"""
+
+    def test_county_lookup_reuses_table(self):
+        fips.counties.County(ST="CA",COUNTY="Alameda")
+        parsed = fips.counties._counties.cache_info() # pylint: disable=protected-access
+        indexed = fips.counties._counties_by.cache_info() # pylint: disable=protected-access
+        for _ in range(20):
+            fips.counties.County(ST="CA",COUNTY="Alameda")
+            fips.counties.Counties("CA")
+        # pylint: disable=protected-access
+        self.assertEqual(fips.counties._counties.cache_info().misses,parsed.misses)
+        self.assertEqual(fips.counties._counties_by.cache_info().misses,indexed.misses)
+
+    def test_state_lookup_reuses_table(self):
+        fips.states.State(ST="CA")
+        indexed = fips.states._states_by.cache_info() # pylint: disable=protected-access
+        for _ in range(20):
+            fips.states.State(ST="CA")
+        # pylint: disable=protected-access
+        self.assertEqual(fips.states._states_by.cache_info().misses,indexed.misses)
+
+    def test_results_do_not_share_cache(self):
+        # changing a result must not change later results
+        data = fips.counties.Counties()
+        data.loc[data.index[0],"COUNTY"] = "Changed"
+        data["FIPS"] = "x"
+        county = fips.counties.County(ST="CA",COUNTY="Alameda")
+        county.data.loc[0,"GEOHASH"] = "changed"
+        state = fips.states.State(ST="CA")
+        state.data.loc[0,"FIPS"] = "99"
+        self.assertNotIn("Changed",set(fips.counties.Counties().COUNTY))
+        self.assertEqual(fips.counties.County(ST="CA",COUNTY="Alameda").GEOHASH,"9q9q1v")
+        self.assertEqual(fips.counties.County(FIPS="06001").COUNTY,"Alameda")
+        self.assertEqual(fips.states.State(ST="CA").FIPS,"06")
+
+    def test_county_FIPS_matches_ST_COUNTY(self):
+        # every 25th county keeps the suite fast while spanning all states
+        for row in fips.counties.Counties().iloc[::25].itertuples():
+            with self.subTest(FIPS=row.FIPS):
+                self.assertEqual(fips.counties.County(FIPS=row.FIPS).to_dict(),
+                    fips.counties.County(ST=row.ST,COUNTY=row.COUNTY).to_dict()
+                    | {"FIPS":row.FIPS})
+
+    def test_counties_select_FIPS(self):
+        test = fips.counties.Counties(use_index="FIPS",selection=["06001"])
+        self.assertEqual(list(test.COUNTY),["Alameda"])
+
+    def test_bad_key(self):
+        for kwargs in [{"NO_SUCH_COLUMN":"CA"},{"ST":"CA","NO_SUCH_COLUMN":"x"}]:
+            with self.subTest(kwargs=kwargs):
+                with self.assertRaises(KeyError):
+                    fips.counties.County(**kwargs)
+                with self.assertRaises(KeyError):
+                    fips.states.State(**kwargs)
 
 class TestCLI(unittest.TestCase):
 

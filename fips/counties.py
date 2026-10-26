@@ -56,6 +56,7 @@ Caveat
 
 """
 
+import functools
 from io import StringIO
 
 import pandas as pd
@@ -106,7 +107,11 @@ class County:
 
         # Arguments 
 
-        -  `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`)
+        -  `**kwargs`: search criteria (e.g., `{ST="CA",COUNTY="Alameda"}`
+           or `{FIPS="06001"}`)
+
+        The county table is parsed once per process and indexed once per
+        set of keys, so repeated lookups are fast (issue #15).
         """
         keys = list(kwargs.keys())
         values = list(kwargs.values())
@@ -114,7 +119,7 @@ class County:
         try:
             # a single key indexes by label, several by tuple of labels
             index = values if len(keys) == 1 else [tuple(values)]
-            self.data = Counties().set_index(keys).loc[index].reset_index()
+            self.data = _counties_by(*keys).loc[index].reset_index()
         except KeyError:
             self.data = None
         if self.data is None or len(self.data) > 1:
@@ -181,7 +186,8 @@ class Counties(pd.DataFrame):
 
       - `SYSTEM`: system interconnection name
 
-      - `RO`: reliability organization name
+      - `RO`: NERC regional entity name. Empty (`""`) for Alaska and Hawaii
+        counties, which are not within any NERC regional entity.
 
       - `REGION`: electricity market or balancing region name (see `REGIONS`)
 
@@ -211,41 +217,57 @@ class Counties(pd.DataFrame):
 
           - `set_index`: index to to set on data frame after row selection
         """
+        data = _counties().copy()
+        if not state is None:
+            data = data.set_index("ST").loc[[state]].reset_index()
+        if use_index:
+            data = data.set_index(use_index)
+        if selection:
+            data = data.loc[selection]
+        if set_index:
+            data = data.reset_index().set_index(set_index)
+        super().__init__(data.sort_index())
 
-        # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
-        data = pd.read_csv(
-            # pylint: disable=too-many-lines
-            StringIO("""
+@functools.cache
+def _counties() -> pd.DataFrame:
+    """@private Parse the embedded county table, once per process (issue #15)
+
+    Callers must not modify the result; `Counties` takes a copy.
+    """
+    # See https://greenwichmeantime.com/time-zone/usa/{state}/counties/ for county timezones
+    data = pd.read_csv(
+        # pylint: disable=too-many-lines
+        StringIO("""
 ST,COUNTY,TYPE,FIPS,LAT,LON,GEOHASH,TZOFFSET,DST,SYSTEM,RO,REGION
-AK,Aleutians East,borough,2013,55.245044,-161.997477,b3uf39,-9,1,AK,NERC,ALASKA
-AK,Aleutians West,census area,2016,51.948964,179.621188,zcpxx3,-10,1,AK,NERC,ALASKA
-AK,Anchorage,municipality,2020,61.17425,-149.284329,bdvu4b,-9,1,AK,NERC,ALASKA
-AK,Bethel,census area,2050,60.929141,-160.152625,b6y4ee,-9,1,AK,NERC,ALASKA
-AK,Bristol Bay,borough,2060,58.741647,-156.966909,bd2qhj,-9,1,AK,NERC,ALASKA
-AK,Denali,borough,2068,63.682039,-150.027016,bem660,-9,1,AK,NERC,ALASKA
-AK,Dillingham,census area,2070,59.543326,-158.267123,b6x6wx,-9,1,AK,NERC,ALASKA
-AK,Fairbanks North Star,borough,2090,64.676044,-146.548159,berzcj,-9,1,AK,NERC,ALASKA
-AK,Haines,borough,2100,59.098404,-135.575791,bfx84y,-9,1,AK,NERC,ALASKA
-AK,Hoonah-Angoon,census area,2105,58.253462,-136.320731,bfr53u,-9,1,AK,NERC,ALASKA
-AK,Juneau,city and borough,2110,58.37291,-134.178445,c42s4d,-9,1,AK,NERC,ALASKA
-AK,Kenai Peninsula,borough,2122,60.360766,-152.05264,bdez7u,-9,1,AK,NERC,ALASKA
-AK,Ketchikan Gateway,borough,2130,55.449938,-131.106685,c1fg2w,-9,1,AK,NERC,ALASKA
-AK,Kodiak Island,borough,2150,57.7044,-153.918372,bd6838,-9,1,AK,NERC,ALASKA
-AK,Kusilvak,census area,2158,62.283588,-163.190171,b75fqd,-9,1,AK,NERC,ALASKA
-AK,Lake and Peninsula,borough,2164,58.108507,-156.413413,bd2f8d,-9,1,AK,NERC,ALASKA
-AK,Matanuska-Susitna,borough,2170,62.279094,-149.619094,bejd73,-9,1,AK,NERC,ALASKA
-AK,Nome,census area,2180,64.783686,-164.188912,b7e0xc,-9,1,AK,NERC,ALASKA
-AK,North Slope,borough,2185,69.449343,-153.47283,bs6g5d,-9,1,AK,NERC,ALASKA
-AK,Northwest Arctic,borough,2188,67.005066,-160.021086,b7yjnt,-9,1,AK,NERC,ALASKA
-AK,Petersburg,borough,2195,57.112458,-133.008598,c41kvm,-9,1,AK,NERC,ALASKA
-AK,Prince of Wales-Hyder,census area,2198,55.682773,-133.162389,c1ckcb,-9,1,AK,NERC,ALASKA
-AK,Sitka,city and borough,2220,57.193204,-135.367396,bfptre,-9,1,AK,NERC,ALASKA
-AK,Skagway,municipality,2230,59.560379,-135.338279,bfxfb6,-9,1,AK,NERC,ALASKA
-AK,Southeast Fairbanks,census area,2240,63.864997,-143.218628,bg65kf,-9,1,AK,NERC,ALASKA
-AK,Valdez-Cordova,census area,2261,61.349843,-145.023109,bfbv5b,-9,1,AK,NERC,ALASKA
-AK,Wrangell,city and borough,2275,56.317416,-132.343978,c41bkk,-9,1,AK,NERC,ALASKA
-AK,Yakutat,city and borough,2282,60.017453,-140.416942,bfsjkt,-9,1,AK,NERC,ALASKA
-AK,Yukon-Koyukuk,census area,2290,65.375727,-151.57785,bes5yv,-9,1,AK,NERC,ALASKA
+AK,Aleutians East,borough,2013,55.245044,-161.997477,b3uf39,-9,1,AK,,ALASKA
+AK,Aleutians West,census area,2016,51.948964,179.621188,zcpxx3,-10,1,AK,,ALASKA
+AK,Anchorage,municipality,2020,61.17425,-149.284329,bdvu4b,-9,1,AK,,ALASKA
+AK,Bethel,census area,2050,60.929141,-160.152625,b6y4ee,-9,1,AK,,ALASKA
+AK,Bristol Bay,borough,2060,58.741647,-156.966909,bd2qhj,-9,1,AK,,ALASKA
+AK,Denali,borough,2068,63.682039,-150.027016,bem660,-9,1,AK,,ALASKA
+AK,Dillingham,census area,2070,59.543326,-158.267123,b6x6wx,-9,1,AK,,ALASKA
+AK,Fairbanks North Star,borough,2090,64.676044,-146.548159,berzcj,-9,1,AK,,ALASKA
+AK,Haines,borough,2100,59.098404,-135.575791,bfx84y,-9,1,AK,,ALASKA
+AK,Hoonah-Angoon,census area,2105,58.253462,-136.320731,bfr53u,-9,1,AK,,ALASKA
+AK,Juneau,city and borough,2110,58.37291,-134.178445,c42s4d,-9,1,AK,,ALASKA
+AK,Kenai Peninsula,borough,2122,60.360766,-152.05264,bdez7u,-9,1,AK,,ALASKA
+AK,Ketchikan Gateway,borough,2130,55.449938,-131.106685,c1fg2w,-9,1,AK,,ALASKA
+AK,Kodiak Island,borough,2150,57.7044,-153.918372,bd6838,-9,1,AK,,ALASKA
+AK,Kusilvak,census area,2158,62.283588,-163.190171,b75fqd,-9,1,AK,,ALASKA
+AK,Lake and Peninsula,borough,2164,58.108507,-156.413413,bd2f8d,-9,1,AK,,ALASKA
+AK,Matanuska-Susitna,borough,2170,62.279094,-149.619094,bejd73,-9,1,AK,,ALASKA
+AK,Nome,census area,2180,64.783686,-164.188912,b7e0xc,-9,1,AK,,ALASKA
+AK,North Slope,borough,2185,69.449343,-153.47283,bs6g5d,-9,1,AK,,ALASKA
+AK,Northwest Arctic,borough,2188,67.005066,-160.021086,b7yjnt,-9,1,AK,,ALASKA
+AK,Petersburg,borough,2195,57.112458,-133.008598,c41kvm,-9,1,AK,,ALASKA
+AK,Prince of Wales-Hyder,census area,2198,55.682773,-133.162389,c1ckcb,-9,1,AK,,ALASKA
+AK,Sitka,city and borough,2220,57.193204,-135.367396,bfptre,-9,1,AK,,ALASKA
+AK,Skagway,municipality,2230,59.560379,-135.338279,bfxfb6,-9,1,AK,,ALASKA
+AK,Southeast Fairbanks,census area,2240,63.864997,-143.218628,bg65kf,-9,1,AK,,ALASKA
+AK,Valdez-Cordova,census area,2261,61.349843,-145.023109,bfbv5b,-9,1,AK,,ALASKA
+AK,Wrangell,city and borough,2275,56.317416,-132.343978,c41bkk,-9,1,AK,,ALASKA
+AK,Yakutat,city and borough,2282,60.017453,-140.416942,bfsjkt,-9,1,AK,,ALASKA
+AK,Yukon-Koyukuk,census area,2290,65.375727,-151.57785,bes5yv,-9,1,AK,,ALASKA
 AL,Autauga,county,1001,32.532237,-86.64644,djf3h6,-6,1,EAST,SERC,SOUTHEAST
 AL,Baldwin,county,1003,30.659218,-87.746067,dj3w7m,-6,1,EAST,SERC,SOUTHEAST
 AL,Barbour,county,1005,31.870253,-85.405104,djem29,-6,1,EAST,SERC,SOUTHEAST
@@ -763,11 +785,11 @@ GA,Wilcox,county,13315,31.96272,-83.438259,djstv6,-5,1,EAST,SERC,SOUTHEAST
 GA,Wilkes,county,13317,33.779031,-82.747921,dnj0jj,-5,1,EAST,SERC,SOUTHEAST
 GA,Wilkinson,county,13319,32.804266,-83.175512,djufe7,-5,1,EAST,SERC,SOUTHEAST
 GA,Worth,county,13321,31.551773,-83.84996,djs77z,-5,1,EAST,SERC,SOUTHEAST
-HI,Hawaii,county,15001,19.597764,-155.502443,8e3rmr,-10,0,HI,NERC,HAWAII
-HI,Honolulu,county,15003,21.580023,-158.123406,87zdcb,-10,0,HI,NERC,HAWAII
-HI,Kalawao,county,15005,21.218764,-156.97401,8eb2ey,-10,0,HI,NERC,HAWAII
-HI,Kauai,county,15007,22.012038,-159.705965,87ymjz,-10,0,HI,NERC,HAWAII
-HI,Maui,county,15009,20.855931,-156.60155,8e8wsk,-10,0,HI,NERC,HAWAII
+HI,Hawaii,county,15001,19.597764,-155.502443,8e3rmr,-10,0,HI,,HAWAII
+HI,Honolulu,county,15003,21.580023,-158.123406,87zdcb,-10,0,HI,,HAWAII
+HI,Kalawao,county,15005,21.218764,-156.97401,8eb2ey,-10,0,HI,,HAWAII
+HI,Kauai,county,15007,22.012038,-159.705965,87ymjz,-10,0,HI,,HAWAII
+HI,Maui,county,15009,20.855931,-156.60155,8e8wsk,-10,0,HI,,HAWAII
 IA,Adair,county,19001,41.328528,-94.478164,9zkg45,-6,1,EAST,MRO,MISO
 IA,Adams,county,19003,41.021656,-94.696906,9zk9m5,-6,1,EAST,MRO,MISO
 IA,Allamakee,county,19005,43.274964,-91.382751,9zxn0t,-6,1,EAST,MRO,MISO
@@ -3361,32 +3383,32 @@ WY,Washakie,county,56043,43.878831,-107.669052,9xg3tg,-7,1,WECC,WECC,NORTHWEST
 WY,Weston,county,56045,43.846213,-104.57002,9xv9km,-7,1,WECC,WECC,NORTHWEST
 """
 ),
-            dtype={
-                "ST":str,
-                "FIPS":str,
-                "COUNTY":str,
-                "TYPE":str,
-                "LAT":float,
-                "LON":float,
-                "GEOHASH":str,
-                "TZOFFSET":float,
-                "DST":int,
-                "SYSTEM":str,
-                "RO":str,
-                },
-            )
+        dtype={
+            "ST":str,
+            "FIPS":str,
+            "COUNTY":str,
+            "TYPE":str,
+            "LAT":float,
+            "LON":float,
+            "GEOHASH":str,
+            "TZOFFSET":float,
+            "DST":int,
+            "SYSTEM":str,
+            "RO":str,
+            },
+        )
+    data["RO"] = data["RO"].fillna("") # AK and HI have no NERC entity
+    data["FIPS"] = [f"{int(x):05d}" for x in data.FIPS]
+    return data
 
-        if not state is None:
-            data = data.set_index("ST").loc[[state]].reset_index()
-        if use_index:
-            data.set_index(use_index,inplace=True)
-        if selection:
-            data = data.loc[selection]
-        if set_index:
-            data.reset_index(inplace=True)
-            data.set_index(set_index,inplace=True)
-        data.FIPS = [f"{int(x):05d}" for x in data.FIPS]
-        super().__init__(data.sort_index())
+@functools.cache
+def _counties_by(*keys:str) -> pd.DataFrame:
+    """@private County table indexed by `keys`, built once per set of keys
+
+    Raises `KeyError` if a key is not a column. Callers must not modify
+    the result; `County` selects rows from it, which makes a new frame.
+    """
+    return _counties().set_index(list(keys)).sort_index()
 
 if __name__ == '__main__':
 
