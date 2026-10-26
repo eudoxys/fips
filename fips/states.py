@@ -45,13 +45,23 @@ class State:
             raise KeyError(f"{kwargs=} is not a valid unique key")
 
     def __getattr__(self,key):
-        return self.data[key].iloc[0]
+        # only called when normal lookup fails; `data` and dunder names
+        # must not fall through to the data columns, otherwise
+        # `copy`/`pickle` recurse before `data` exists (issue #9)
+        if key == "data" or key.startswith("__"):
+            raise AttributeError(key)
+        try:
+            return self.data[key].iloc[0]
+        except KeyError:
+            raise AttributeError(
+                f"{type(self).__name__!r} object has no attribute {key!r}"
+                ) from None
 
     def __str__(self):
         return f"{self.STATE}"
 
     def __repr__(self):
-        return f"State(ST={self.ST})"
+        return f"State(ST={self.ST!r})"
 
     def to_dict(self):
         """Convert state data object to dict"""

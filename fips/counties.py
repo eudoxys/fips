@@ -98,20 +98,32 @@ class County:
         values = list(kwargs.values())
 
         try:
-            self.data = Counties().set_index(keys).loc[[values]].reset_index()
+            # a single key indexes by label, several by tuple of labels
+            index = values if len(keys) == 1 else [tuple(values)]
+            self.data = Counties().set_index(keys).loc[index].reset_index()
         except KeyError:
             self.data = None
         if self.data is None or len(self.data) > 1:
             raise KeyError(f"{kwargs=} is not a valid unique key")
 
     def __getattr__(self,key):
-        return self.data[key].iloc[0]
+        # only called when normal lookup fails; `data` and dunder names
+        # must not fall through to the data columns, otherwise
+        # `copy`/`pickle` recurse before `data` exists (issue #9)
+        if key == "data" or key.startswith("__"):
+            raise AttributeError(key)
+        try:
+            return self.data[key].iloc[0]
+        except KeyError:
+            raise AttributeError(
+                f"{type(self).__name__!r} object has no attribute {key!r}"
+                ) from None
 
     def __str__(self):
         return f"{self.COUNTY} {self.ST} ({self.GEOHASH})"
 
     def __repr__(self):
-        return f"<County(FIPS={self.FIPS})>"
+        return f"County(FIPS={self.FIPS!r})"
 
     def to_dict(self):
         """Convert county data object to dict"""

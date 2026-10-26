@@ -18,7 +18,7 @@
 
 # Code
 
-- [ ] Fix `State`/`County` `__getattr__` `KeyError` and copy/pickle recursion (#9)
+- [x] Fix `State`/`County` `__getattr__` `KeyError` and copy/pickle recursion (#9)
 
 - [ ] Parse the embedded tables once instead of on every call (#15)
 
