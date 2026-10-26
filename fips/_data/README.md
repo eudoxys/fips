@@ -1,7 +1,7 @@
 # County table
 
 The county data used by `fips.counties.Counties` is a CSV table embedded in
-`fips/counties.py` (the `StringIO("""...""")` block in `Counties.__init__`),
+`fips/counties.py` (the `StringIO("""...""")` block in `_counties()`),
 so it ships with the module and needs no package data. This folder holds the
 script that maintains its `REGION` column. It is not public API: pdoc
 skips it, and it is never imported by the package.

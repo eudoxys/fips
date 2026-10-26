@@ -33,6 +33,8 @@ For these rows:
 
 """
 
+import functools
+
 import pandas as pd
 
 class State:
@@ -46,18 +48,15 @@ class State:
         # Arguments
 
         - `**kwargs`: search criteria (e.g., `{ST="CA"}`)
+
+        The state table is built once per process and indexed once per
+        set of keys, so repeated lookups are fast (issue #15).
         """
         keys = list(kwargs.keys())
         values = list(kwargs.values())
 
         try:
-            self.data = States(
-                with_territories=True,
-                with_canada=True,
-                with_mexico=True,
-                )\
-                .set_index(keys).loc[values]\
-                .reset_index()
+            self.data = _states_by(*keys).loc[values].reset_index()
         except KeyError:
             self.data = None
         if self.data is None or len(self.data) > 1:
@@ -228,6 +227,17 @@ class States(pd.DataFrame):
         if use_index:
             data.set_index(use_index,inplace=True)
         super().__init__(data.sort_index())
+
+@functools.cache
+def _states_by(*keys:str) -> pd.DataFrame:
+    """@private All states, territories, provinces, and Mexico indexed by
+    `keys`, built once per set of keys
+
+    Raises `KeyError` if a key is not a column. Callers must not modify
+    the result; `State` selects rows from it, which makes a new frame.
+    """
+    return States(with_territories=True,with_canada=True,with_mexico=True)\
+        .set_index(list(keys)).sort_index()
 
 if __name__ == '__main__':
 

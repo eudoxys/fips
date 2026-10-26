@@ -33,6 +33,10 @@ No sibling Eudoxys dependencies.
   string in the module; `State` and `County` select one row by keyword
   (`State(ST="CA")`, `County(ST="CA",COUNTY="Alameda")`) and expose its
   columns as attributes.
+- The county table is parsed once per process (`_counties()`), and
+  `County`/`State` look up rows in indexed tables cached per key set
+  (`_counties_by()`, `_states_by()`). These cached frames are shared:
+  never modify them; `Counties` returns a copy (#15).
 - Columns are upper case. `FIPS` is a zero-padded string (`"06"`,
   `"06001"`) even though the embedded table stores it as an integer.
 - `(ST,COUNTY)` and `FIPS` are each unique keys for counties. Independent
@@ -75,8 +79,6 @@ Everything is fast and offline; the full suite runs in seconds. CI
   changes, and the table has no recorded source (#7).
 - Several `REGION` assignments look wrong (e.g. Riverside CA as `IID`)
   and have no source (#8). Only CA and NV have county-level regions.
-- `State`/`County` rebuild and re-parse the whole table on every call
-  (#15).
 - Tests live in `fips/_tests/tests.py` (unittest style), not
   `fips/_test/` (#12). Docstring and README examples are out of date
   (#10).
