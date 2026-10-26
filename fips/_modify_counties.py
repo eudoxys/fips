@@ -21,7 +21,7 @@ regions = {
     "ID":"NORTHWEST",
     "IL":"MISO",
     "IN":"MISO",
-    "IA":"ISMO",
+    "IA":"MISO",
     "KS":"SPP",
     "KY":"PJM",
     "LA":"MISO",

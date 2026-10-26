@@ -3,6 +3,7 @@
 import io
 import contextlib
 import unittest
+import pandas as pd
 import fips
 import fips.cli
 
@@ -67,6 +68,29 @@ class TestStates(unittest.TestCase):
         self.assertEqual(test.SYSTEM,"WECC")
         self.assertEqual(test.RO,"WECC")
 
+    def test_states_match_counties(self):
+        # each state's TZOFFSET and DST must agree with the majority of
+        # its counties in `Counties`
+        counties = fips.counties.Counties()
+        for st,state in fips.states.States(use_index="ST").iterrows():
+            data = counties[counties.ST==st]
+            with self.subTest(ST=st):
+                self.assertGreater(len(data),0)
+                self.assertEqual(state.TZOFFSET,data.TZOFFSET.mode().iloc[0])
+                self.assertEqual(state.DST,data.DST.mode().iloc[0])
+
+    def test_states_TZOFFSET_float(self):
+        data = fips.states.States(with_territories=True,
+            with_canada=True,with_mexico=True)
+        for st,tz in zip(data.ST,data.TZOFFSET):
+            with self.subTest(ST=st):
+                self.assertIsInstance(tz,float)
+
+    def test_state_issue_4(self):
+        self.assertEqual(fips.states.State(ST="HI").TZOFFSET,-10.0)
+        self.assertEqual(fips.states.State(ST="KY").TZOFFSET,-5.0)
+        self.assertEqual(fips.states.State(ST="SK").DST,0)
+
     def test_counties_ST_COUNTY(self):
         test = fips.counties.Counties("CA",use_index="COUNTY").loc["Alameda"]
         self.assertEqual(test.FIPS,"06001")
@@ -83,7 +107,44 @@ class TestStates(unittest.TestCase):
         self.assertEqual(test.SYSTEM,"WECC")
         self.assertEqual(test.RO,"WECC")
 
-class TestCli(unittest.TestCase):
+    def test_counties_REGION_valid(self):
+        regions = set(fips.counties.Counties().REGION)
+        self.assertEqual(regions - set(fips.counties.REGIONS),set())
+
+    def test_counties_IA_REGION(self):
+        test = fips.counties.Counties("IA")
+        self.assertEqual(len(test),99)
+        self.assertEqual(set(test.REGION),{"MISO"})
+
+class TestCLI(unittest.TestCase):
+
+    def run_cli(self,*args):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), pd.option_context(
+                "display.width",None,"display.max_columns",None):
+            code = fips.cli.main(*args)
+        self.assertEqual(code,fips.cli.E_OK)
+        return out.getvalue().splitlines()
+
+    def test_cli_county_table(self):
+        lines = self.run_cli("CA","Alameda")
+        self.assertEqual(len(lines),3)
+        self.assertIn("FIPS",lines[0])
+        self.assertIn("GEOHASH",lines[0])
+        self.assertEqual(lines[1].split(),["ST","COUNTY"])
+        self.assertEqual(lines[2].split()[:3],["CA","Alameda","06001"])
+
+    def test_cli_county_csv(self):
+        lines = self.run_cli("-f","csv","CA","Alameda")
+        self.assertEqual(len(lines),2)
+        self.assertTrue(lines[0].startswith("ST,COUNTY,FIPS,LAT,LON,GEOHASH,"))
+        self.assertTrue(lines[1].startswith("CA,Alameda,06001,"))
+
+    def test_cli_state_csv(self):
+        lines = self.run_cli("-f","csv","CA")
+        self.assertEqual(len(lines),2)
+        self.assertTrue(lines[0].startswith("ST,STATE,FIPS,"))
+        self.assertTrue(lines[1].startswith("CA,California,06,"))
 
     def test_cli_too_many_locale_args(self):
         err = io.StringIO()

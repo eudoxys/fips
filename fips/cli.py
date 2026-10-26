@@ -103,7 +103,7 @@ def main(*args:list[str]) -> int:
                     with_mexico=True,
                     ).set_index("ST").sort_index().loc[args.locale]
             case 2:
-                result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[*args.locale]
+                result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[[tuple(args.locale)]]
             case _:
                 print("ERROR [fips]: expected STATE [COUNTY], "
                     f"got {len(args.locale)} arguments",
