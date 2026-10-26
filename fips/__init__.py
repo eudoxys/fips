@@ -59,15 +59,18 @@ County data includes the following:
 
   - `FIPS`: county FIPS code, e.g., `"06001"`
 
-  - `COUNTY`: county name, e.g., `"Alameda"`. Qualifiers such as "County",
-    "Parish", "Borough", "Census Area", "Municipality", and "City and
-    Borough" are not included; the qualifier is given by `TYPE` instead.
-    The exception is independent cities, which keep the Census Bureau's
-    lowercase " city" suffix, e.g., `"Baltimore city"`, `"St. Louis city"`,
-    and `"Richmond city"`. This distinguishes them from the counties of the
-    same name in the same state (`"Baltimore"`, `"St. Louis"`,
-    `"Richmond"`). Carson City NV is named `"Carson City"`, as in Census
-    data. With this rule, `(ST,COUNTY)` is a unique key for counties, as is
+  - `COUNTY`: county name in title case, e.g., `"Alameda"`. Minor words
+    stay lowercase as in the official names, e.g., `"Lake of the Woods"`
+    and `"Fond du Lac"`. Qualifiers such as "County", "Parish", "Borough",
+    "Census Area", "Municipality", and "City and Borough" are not
+    included; the qualifier is given by `TYPE` instead. The exception is
+    independent cities, which keep a " City" suffix, e.g.,
+    `"Baltimore City"`, `"St. Louis City"`, and `"Richmond City"`. This
+    distinguishes them from the counties of the same name in the same
+    state (`"Baltimore"`, `"St. Louis"`, `"Richmond"`). Carson City NV is
+    named `"Carson City"`. Charles City and James City VA are counties,
+    not cities, so check `TYPE` rather than the name to identify a city.
+    With this rule, `(ST,COUNTY)` is a unique key for counties, as is
     `FIPS`.
 
   - `TYPE`: county-equivalent type, one of `"county"`, `"parish"`,
@@ -104,16 +107,16 @@ Command line examples
         ST COUNTY                                                                                  
         CA Alameda  county  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC  CAISO
 
-  - Get Baltimore city (an independent city) MD data, as distinct from
+  - Get Baltimore City (an independent city) MD data, as distinct from
     Baltimore County MD (`fips MD Baltimore`)
 
-        fips MD "Baltimore city"
+        fips MD "Baltimore City"
 
     Outputs
 
                            TYPE   FIPS        LAT        LON GEOHASH  TZOFFSET  DST SYSTEM  RO REGION
-        ST COUNTY                                                                                    
-        MD Baltimore city  city  24510  39.300032 -76.610476  dqcx8d      -5.0    1   EAST  RF    PJM
+        ST COUNTY
+        MD Baltimore City  city  24510  39.300032 -76.610476  dqcx8d      -5.0    1   EAST  RF    PJM
 
 Python examples
 ---------------

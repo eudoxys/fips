@@ -26,11 +26,11 @@ which outputs
        Weston       WECC  county  56045  43.846213  ...      -7.0   1  WECC  NORTHWEST
 
 To tell an independent city from the county of the same name, use the
-" city" suffix
+" City" suffix
 
     from fips import County
     print(County(ST="MD",COUNTY="Baltimore").FIPS)
-    print(County(ST="MD",COUNTY="Baltimore city").FIPS)
+    print(County(ST="MD",COUNTY="Baltimore City").FIPS)
 
 which outputs
 
@@ -127,14 +127,18 @@ class Counties(pd.DataFrame):
 
       - `FIPS`: county FIPS code
 
-      - `COUNTY`: county-equivalent name, without its "County", "Parish",
-        "Borough", "Census Area", "Municipality", or "City and Borough"
-        qualifier (see `TYPE`). Independent cities keep the Census
-        Bureau's lowercase " city" suffix (e.g., `"Baltimore city"`,
-        `"Richmond city"`), so they don't collide with the county of the
-        same name (`"Baltimore"`, `"Richmond"`). Carson City NV is named
-        `"Carson City"`, as in Census data. Within a state, `COUNTY` is
-        unique, so `(ST,COUNTY)` is a unique key, as is `FIPS`.
+      - `COUNTY`: county-equivalent name in title case, without its
+        "County", "Parish", "Borough", "Census Area", "Municipality", or
+        "City and Borough" qualifier (see `TYPE`). Minor words stay
+        lowercase as in the official names (e.g., `"Lake of the Woods"`,
+        `"Fond du Lac"`). Independent cities keep a " City" suffix
+        (e.g., `"Baltimore City"`, `"Richmond City"`), so they don't
+        collide with the county of the same name (`"Baltimore"`,
+        `"Richmond"`); Carson City NV is `"Carson City"`. A name ending in
+        " City" is not always a city: Charles City and James City VA are
+        counties, so use `TYPE` to tell them apart. Within a state,
+        `COUNTY` is unique, so `(ST,COUNTY)` is a unique key, as is
+        `FIPS`.
 
       - `TYPE`: county-equivalent type (see `TYPES`), e.g., `"county"`,
         `"parish"`, or `"city"`
@@ -1381,7 +1385,7 @@ MA,Worcester,county,25027,42.311693,-71.940282,drsbdy,-5,1,EAST,NPCC,ISO-NE
 MD,Allegany,county,24001,39.612313,-78.703104,dr0135,-5,1,EAST,RF,PJM
 MD,Anne Arundel,county,24003,38.991617,-76.560894,dqctcf,-5,1,EAST,RF,PJM
 MD,Baltimore,county,24005,39.443167,-76.616569,dr182s,-5,1,EAST,RF,PJM
-MD,Baltimore city,city,24510,39.300032,-76.610476,dqcx8d,-5,1,EAST,RF,PJM
+MD,Baltimore City,city,24510,39.300032,-76.610476,dqcx8d,-5,1,EAST,RF,PJM
 MD,Calvert,county,24009,38.522719,-76.529762,dqce4s,-5,1,EAST,RF,PJM
 MD,Caroline,county,24011,38.871531,-75.831662,dqfj4k,-5,1,EAST,RF,PJM
 MD,Carroll,county,24013,39.563331,-77.015328,dr11p6,-5,1,EAST,RF,PJM
@@ -1689,7 +1693,7 @@ MO,St. Charles,county,29183,38.781102,-90.674915,9yzs8e,-6,1,EAST,SERC,MISO
 MO,St. Clair,county,29185,38.04223,-93.77656,9yv26j,-6,1,EAST,SERC,MISO
 MO,St. Francois,county,29187,37.810707,-90.473868,9yxxj5,-6,1,EAST,SERC,MISO
 MO,St. Louis,county,29189,38.640688,-90.446073,9yzevf,-6,1,EAST,SERC,MISO
-MO,St. Louis city,city,29510,38.635699,-90.244582,9yzgf3,-6,1,EAST,SERC,MISO
+MO,St. Louis City,city,29510,38.635699,-90.244582,9yzgf3,-6,1,EAST,SERC,MISO
 MO,Ste. Genevieve,county,29186,37.885845,-90.161531,9yxzs2,-6,1,EAST,SERC,MISO
 MO,Stoddard,county,29207,36.851557,-89.947481,dn819h,-6,1,EAST,SERC,MISO
 MO,Stone,county,29209,36.751004,-93.473701,9yt90f,-6,1,EAST,SERC,MISO
@@ -2995,7 +2999,7 @@ UT,Wayne,county,49055,38.25984,-110.990877,9wc1dk,-7,1,WECC,WECC,SOUTHWEST
 UT,Weber,county,49057,41.270325,-111.876883,9x26y1,-7,1,WECC,WECC,SOUTHWEST
 VA,Accomack,county,51001,37.765944,-75.757807,dqdnu5,-5,1,EAST,SERC,PJM
 VA,Albemarle,county,51003,38.024184,-78.553506,dqb0k6,-5,1,EAST,SERC,PJM
-VA,Alexandria city,city,51510,38.819251,-77.08367,dqchvf,-5,1,EAST,SERC,PJM
+VA,Alexandria City,city,51510,38.819251,-77.08367,dqchvf,-5,1,EAST,SERC,PJM
 VA,Alleghany,county,51005,37.787905,-80.008669,dnxngr,-5,1,EAST,SERC,PJM
 VA,Amelia,county,51007,37.331927,-77.977462,dq8s3s,-5,1,EAST,SERC,PJM
 VA,Amherst,county,51009,37.629304,-79.154667,dnxwnf,-5,1,EAST,SERC,PJM
@@ -3006,41 +3010,41 @@ VA,Bath,county,51017,38.068368,-79.731203,dnz29d,-5,1,EAST,SERC,PJM
 VA,Bedford,county,51019,37.312257,-79.527223,dnxkq2,-5,1,EAST,SERC,PJM
 VA,Bland,county,51021,37.130612,-81.125853,dnw71z,-5,1,EAST,SERC,PJM
 VA,Botetourt,county,51023,37.565482,-79.797546,dnxm8n,-5,1,EAST,SERC,PJM
-VA,Bristol city,city,51520,36.616954,-82.157564,dnt863,-5,1,EAST,SERC,PJM
+VA,Bristol City,city,51520,36.616954,-82.157564,dnt863,-5,1,EAST,SERC,PJM
 VA,Brunswick,county,51025,36.764204,-77.861483,dq89hh,-5,1,EAST,SERC,PJM
 VA,Buchanan,county,51027,37.26812,-82.038151,dntsj0,-5,1,EAST,RF,PJM
 VA,Buckingham,county,51029,37.573928,-78.529169,dq8jv0,-5,1,EAST,SERC,PJM
-VA,Buena Vista city,city,51530,37.729345,-79.358134,dnxwdh,-5,1,EAST,SERC,PJM
+VA,Buena Vista City,city,51530,37.729345,-79.358134,dnxwdh,-5,1,EAST,SERC,PJM
 VA,Campbell,county,51031,37.210152,-79.095428,dnxg8j,-5,1,EAST,SERC,PJM
 VA,Caroline,county,51033,38.030319,-77.352348,dqbbrg,-5,1,EAST,SERC,PJM
 VA,Carroll,county,51035,36.731963,-80.727831,dnw8fy,-5,1,EAST,SERC,PJM
 VA,Charles City,county,51036,37.361054,-77.05417,dq9hw9,-5,1,EAST,SERC,PJM
 VA,Charlotte,county,51037,37.009042,-78.658568,dq84d1,-5,1,EAST,SERC,PJM
-VA,Charlottesville city,city,51540,38.037658,-78.485381,dqb0qh,-5,1,EAST,SERC,PJM
-VA,Chesapeake city,city,51550,36.679376,-76.301788,dq98xt,-5,1,EAST,SERC,PJM
+VA,Charlottesville City,city,51540,38.037658,-78.485381,dqb0qh,-5,1,EAST,SERC,PJM
+VA,Chesapeake City,city,51550,36.679376,-76.301788,dq98xt,-5,1,EAST,SERC,PJM
 VA,Chesterfield,county,51041,37.378434,-77.585847,dq8udk,-5,1,EAST,SERC,PJM
 VA,Clarke,county,51043,39.115307,-77.990748,dqbw92,-5,1,EAST,SERC,PJM
-VA,Colonial Heights city,city,51570,37.261685,-77.396804,dq8gyz,-5,1,EAST,SERC,PJM
-VA,Covington city,city,51580,37.78106,-79.985434,dnxngv,-5,1,EAST,SERC,PJM
+VA,Colonial Heights City,city,51570,37.261685,-77.396804,dq8gyz,-5,1,EAST,SERC,PJM
+VA,Covington City,city,51580,37.78106,-79.985434,dnxngv,-5,1,EAST,SERC,PJM
 VA,Craig,county,51045,37.473603,-80.231051,dnwvnm,-5,1,EAST,SERC,PJM
 VA,Culpeper,county,51047,38.48593,-77.956476,dqbdfn,-5,1,EAST,SERC,PJM
 VA,Cumberland,county,51049,37.520189,-78.252836,dq8m7q,-5,1,EAST,SERC,PJM
-VA,Danville city,city,51590,36.583334,-79.408071,dnx815,-5,1,EAST,SERC,PJM
+VA,Danville City,city,51590,36.583334,-79.408071,dnx815,-5,1,EAST,SERC,PJM
 VA,Dickenson,county,51051,37.136701,-82.34922,dnt7q0,-5,1,EAST,RF,PJM
 VA,Dinwiddie,county,51053,37.073498,-77.635492,dq8fcm,-5,1,EAST,SERC,PJM
-VA,Emporia city,city,51595,36.696182,-77.535975,dq8bg8,-5,1,EAST,SERC,PJM
+VA,Emporia City,city,51595,36.696182,-77.535975,dq8bg8,-5,1,EAST,SERC,PJM
 VA,Essex,county,51057,37.93948,-76.941871,dq9rc4,-5,1,EAST,SERC,PJM
 VA,Fairfax,county,51059,38.82952,-77.273252,dqchcs,-5,1,EAST,RF,PJM
-VA,Fairfax city,city,51600,38.853183,-77.299025,dqcj11,-5,1,EAST,SERC,PJM
-VA,Falls Church city,city,51610,38.884722,-77.175603,dqcj5y,-5,1,EAST,SERC,PJM
+VA,Fairfax City,city,51600,38.853183,-77.299025,dqcj11,-5,1,EAST,SERC,PJM
+VA,Falls Church City,city,51610,38.884722,-77.175603,dqcj5y,-5,1,EAST,SERC,PJM
 VA,Fauquier,county,51061,38.744096,-77.8215,dqbsmj,-5,1,EAST,SERC,PJM
 VA,Floyd,county,51063,36.931433,-80.350266,dnwf5e,-5,1,EAST,SERC,PJM
 VA,Fluvanna,county,51065,37.830584,-78.283494,dq8r4w,-5,1,EAST,SERC,PJM
 VA,Franklin,county,51067,36.991186,-79.882715,dnx4qn,-5,1,EAST,SERC,PJM
-VA,Franklin city,city,51620,36.684014,-76.941396,dq929n,-5,1,EAST,SERC,PJM
+VA,Franklin City,city,51620,36.684014,-76.941396,dq929n,-5,1,EAST,SERC,PJM
 VA,Frederick,county,51069,39.20366,-78.263829,dqbr50,-5,1,EAST,RF,PJM
-VA,Fredericksburg city,city,51630,38.299272,-77.486658,dqbcus,-5,1,EAST,SERC,PJM
-VA,Galax city,city,51640,36.66564,-80.914308,dnw2wd,-5,1,EAST,SERC,PJM
+VA,Fredericksburg City,city,51630,38.299272,-77.486658,dqbcus,-5,1,EAST,SERC,PJM
+VA,Galax City,city,51640,36.66564,-80.914308,dnw2wd,-5,1,EAST,SERC,PJM
 VA,Giles,county,51071,37.318072,-80.698321,dnws79,-5,1,EAST,RF,PJM
 VA,Gloucester,county,51073,37.403541,-76.523505,dq9sf9,-5,1,EAST,SERC,PJM
 VA,Goochland,county,51075,37.718814,-77.917626,dq8wdf,-5,1,EAST,SERC,PJM
@@ -3048,13 +3052,13 @@ VA,Grayson,county,51077,36.652229,-81.215324,dnw0xb,-5,1,EAST,SERC,PJM
 VA,Greene,county,51079,38.297981,-78.470163,dqb1y7,-5,1,EAST,SERC,PJM
 VA,Greensville,county,51081,36.680336,-77.560277,dq8bej,-5,1,EAST,SERC,PJM
 VA,Halifax,county,51083,36.766461,-78.939614,dnxc5t,-5,1,EAST,SERC,PJM
-VA,Hampton city,city,51650,37.047961,-76.297293,dq9dzb,-5,1,EAST,SERC,PJM
+VA,Hampton City,city,51650,37.047961,-76.297293,dq9dzb,-5,1,EAST,SERC,PJM
 VA,Hanover,county,51085,37.760215,-77.491317,dq8yud,-5,1,EAST,SERC,PJM
-VA,Harrisonburg city,city,51660,38.436255,-78.873303,dnzftj,-5,1,EAST,SERC,PJM
+VA,Harrisonburg City,city,51660,38.436255,-78.873303,dnzftj,-5,1,EAST,SERC,PJM
 VA,Henrico,county,51087,37.631269,-77.651922,dq8y0f,-5,1,EAST,SERC,PJM
 VA,Henry,county,51089,36.781479,-79.759231,dnx31p,-5,1,EAST,SERC,PJM
 VA,Highland,county,51091,38.366243,-79.564472,dnz6m2,-5,1,EAST,SERC,PJM
-VA,Hopewell city,city,51670,37.29101,-77.298944,dq9h1h,-5,1,EAST,SERC,PJM
+VA,Hopewell City,city,51670,37.29101,-77.298944,dq9h1h,-5,1,EAST,SERC,PJM
 VA,Isle of Wight,county,51093,36.901418,-76.707569,dq93ym,-5,1,EAST,SERC,PJM
 VA,James City,county,51095,37.324837,-76.777888,dq9kkf,-5,1,EAST,SERC,PJM
 VA,King George,county,51099,38.27718,-77.162636,dqc1u0,-5,1,EAST,SERC,PJM
@@ -3062,67 +3066,67 @@ VA,King William,county,51101,37.70826,-77.091054,dq9ntb,-5,1,EAST,SERC,PJM
 VA,King and Queen,county,51097,37.717772,-76.905581,dq9q9f,-5,1,EAST,SERC,PJM
 VA,Lancaster,county,51103,37.704843,-76.412663,dq9wmp,-5,1,EAST,SERC,PJM
 VA,Lee,county,51105,36.701721,-83.130112,dnsbu3,-5,1,EAST,SERC,PJM
-VA,Lexington city,city,51678,37.782332,-79.44432,dnxwbn,-5,1,EAST,SERC,PJM
+VA,Lexington City,city,51678,37.782332,-79.44432,dnxwbn,-5,1,EAST,SERC,PJM
 VA,Loudoun,county,51107,39.0812,-77.638898,dqby36,-5,1,EAST,SERC,PJM
 VA,Louisa,county,51109,37.972704,-77.959795,dqb81b,-5,1,EAST,SERC,PJM
 VA,Lunenburg,county,51111,36.945555,-78.240528,dq865t,-5,1,EAST,SERC,PJM
-VA,Lynchburg city,city,51680,37.399016,-79.195458,dnxsvb,-5,1,EAST,SERC,PJM
+VA,Lynchburg City,city,51680,37.399016,-79.195458,dnxsvb,-5,1,EAST,SERC,PJM
 VA,Madison,county,51113,38.412059,-78.276961,dqb6db,-5,1,EAST,SERC,PJM
-VA,Manassas city,city,51683,38.746808,-77.482633,dqbukv,-5,1,EAST,SERC,PJM
-VA,Manassas Park city,city,51685,38.768945,-77.448767,dqbut9,-5,1,EAST,SERC,PJM
-VA,Martinsville city,city,51690,36.683527,-79.863647,dnx0ww,-5,1,EAST,SERC,PJM
+VA,Manassas City,city,51683,38.746808,-77.482633,dqbukv,-5,1,EAST,SERC,PJM
+VA,Manassas Park City,city,51685,38.768945,-77.448767,dqbut9,-5,1,EAST,SERC,PJM
+VA,Martinsville City,city,51690,36.683527,-79.863647,dnx0ww,-5,1,EAST,SERC,PJM
 VA,Mathews,county,51115,37.425348,-76.268808,dq9ubm,-5,1,EAST,SERC,PJM
 VA,Mecklenburg,county,51117,36.687256,-78.368959,dq828w,-5,1,EAST,SERC,PJM
 VA,Middlesex,county,51119,37.606975,-76.528082,dq9tfw,-5,1,EAST,SERC,PJM
 VA,Montgomery,county,51121,37.175534,-80.387791,dnwg6x,-5,1,EAST,RF,PJM
 VA,Nelson,county,51125,37.789079,-78.88344,dnxyuz,-5,1,EAST,SERC,PJM
 VA,New Kent,county,51127,37.510158,-76.999326,dq9jru,-5,1,EAST,SERC,PJM
-VA,Newport News city,city,51700,37.076136,-76.52198,dq9dft,-5,1,EAST,SERC,PJM
-VA,Norfolk city,city,51710,36.923015,-76.244641,dq9f11,-5,1,EAST,SERC,PJM
+VA,Newport News City,city,51700,37.076136,-76.52198,dq9dft,-5,1,EAST,SERC,PJM
+VA,Norfolk City,city,51710,36.923015,-76.244641,dq9f11,-5,1,EAST,SERC,PJM
 VA,Northampton,county,51131,37.302775,-75.924018,dqdh0q,-5,1,EAST,SERC,PJM
 VA,Northumberland,county,51133,37.856974,-76.379687,dq9xmg,-5,1,EAST,SERC,PJM
-VA,Norton city,city,51720,36.931549,-82.625996,dnt4pg,-5,1,EAST,SERC,PJM
+VA,Norton City,city,51720,36.931549,-82.625996,dnt4pg,-5,1,EAST,SERC,PJM
 VA,Nottoway,county,51135,37.141167,-78.053866,dq87rc,-5,1,EAST,SERC,PJM
 VA,Orange,county,51137,38.250193,-78.009622,dqb98g,-5,1,EAST,SERC,PJM
 VA,Page,county,51139,38.623209,-78.491872,dqb5tz,-5,1,EAST,SERC,PJM
 VA,Patrick,county,51141,36.667138,-80.286413,dnwbt5,-5,1,EAST,SERC,PJM
-VA,Petersburg city,city,51730,37.20473,-77.392368,dq8gwu,-5,1,EAST,SERC,PJM
+VA,Petersburg City,city,51730,37.20473,-77.392368,dq8gwu,-5,1,EAST,SERC,PJM
 VA,Pittsylvania,county,51143,36.821721,-79.398502,dnx93p,-5,1,EAST,SERC,PJM
-VA,Poquoson city,city,51735,37.12836,-76.303534,dq9epx,-5,1,EAST,SERC,PJM
-VA,Portsmouth city,city,51740,36.859339,-76.356973,dq99wq,-5,1,EAST,SERC,PJM
+VA,Poquoson City,city,51735,37.12836,-76.303534,dq9epx,-5,1,EAST,SERC,PJM
+VA,Portsmouth City,city,51740,36.859339,-76.356973,dq99wq,-5,1,EAST,SERC,PJM
 VA,Powhatan,county,51145,37.549404,-77.912855,dq8te5,-5,1,EAST,SERC,PJM
 VA,Prince Edward,county,51147,37.224881,-78.432957,dq85z0,-5,1,EAST,SERC,PJM
 VA,Prince George,county,51149,37.187325,-77.220993,dq95dc,-5,1,EAST,SERC,PJM
 VA,Prince William,county,51153,38.701119,-77.479579,dqbuhv,-5,1,EAST,RFRF,PJM
 VA,Pulaski,county,51155,37.063385,-80.713444,dnwdg7,-5,1,EAST,RF,PJM
-VA,Radford city,city,51750,37.120119,-80.559147,dnwenv,-5,1,EAST,SERC,PJM
+VA,Radford City,city,51750,37.120119,-80.559147,dnwenv,-5,1,EAST,SERC,PJM
 VA,Rappahannock,county,51157,38.684522,-78.168824,dqbkj4,-5,1,EAST,SERC,PJM
 VA,Richmond,county,51159,37.942894,-76.730561,dq9rvg,-5,1,EAST,SERC,PJM
-VA,Richmond city,city,51760,37.531399,-77.476009,dq8vsb,-5,1,EAST,SERC,PJM
+VA,Richmond City,city,51760,37.531399,-77.476009,dq8vsb,-5,1,EAST,SERC,PJM
 VA,Roanoke,county,51161,37.343588,-79.943996,dnxhky,-5,1,EAST,RF,PJM
-VA,Roanoke city,city,51770,37.278458,-79.958174,dnxhhd,-5,1,EAST,SERC,PJM
+VA,Roanoke City,city,51770,37.278458,-79.958174,dnxhhd,-5,1,EAST,SERC,PJM
 VA,Rockbridge,county,51163,37.814517,-79.447754,dnxx05,-5,1,EAST,SERC,PJM
 VA,Rockingham,county,51165,38.507585,-78.885321,dnzghf,-5,1,EAST,SERC,PJM
 VA,Russell,county,51167,36.93342,-82.095934,dntd5g,-5,1,EAST,RF,PJM
-VA,Salem city,city,51775,37.285333,-80.055241,dnxh47,-5,1,EAST,SERC,PJM
+VA,Salem City,city,51775,37.285333,-80.055241,dnxh47,-5,1,EAST,SERC,PJM
 VA,Scott,county,51169,36.712776,-82.613624,dnt2b5,-5,1,EAST,SERC,PJM
 VA,Shenandoah,county,51171,38.856204,-78.573987,dqbjh1,-5,1,EAST,SERC,PJM
 VA,Smyth,county,51173,36.842318,-81.539786,dnw18d,-5,1,EAST,RF,PJM
 VA,Southampton,county,51175,36.720068,-77.103813,dq90vk,-5,1,EAST,SERC,PJM
 VA,Spotsylvania,county,51177,38.182431,-77.657226,dqbc0y,-5,1,EAST,SERC,PJM
 VA,Stafford,county,51179,38.413261,-77.451334,dqbft8,-5,1,EAST,RF,PJM
-VA,Staunton city,city,51790,38.157978,-79.061876,dnzc0f,-5,1,EAST,SERC,PJM
-VA,Suffolk city,city,51800,36.697157,-76.634781,dq98b0,-5,1,EAST,SERC,PJM
+VA,Staunton City,city,51790,38.157978,-79.061876,dnzc0f,-5,1,EAST,SERC,PJM
+VA,Suffolk City,city,51800,36.697157,-76.634781,dq98b0,-5,1,EAST,SERC,PJM
 VA,Surry,county,51181,37.119761,-76.880172,dq974t,-5,1,EAST,SERC,PJM
 VA,Sussex,county,51183,36.926645,-77.259732,dq941f,-5,1,EAST,SERC,PJM
 VA,Tazewell,county,51185,37.125395,-81.562924,dntgpy,-5,1,EAST,RF,PJM
-VA,Virginia Beach city,city,51810,36.779985,-76.025208,dq9cnp,-5,1,EAST,SERC,PJM
+VA,Virginia Beach City,city,51810,36.779985,-76.025208,dq9cnp,-5,1,EAST,SERC,PJM
 VA,Warren,county,51187,38.908221,-78.207594,dqbmk7,-5,1,EAST,RF,PJM
 VA,Washington,county,51191,36.747814,-81.950322,dnt9p1,-5,1,EAST,SERC,PJM
-VA,Waynesboro city,city,51820,38.067157,-78.90142,dnzbs9,-5,1,EAST,SERC,PJM
+VA,Waynesboro City,city,51820,38.067157,-78.90142,dnzbs9,-5,1,EAST,SERC,PJM
 VA,Westmoreland,county,51193,38.109311,-76.803933,dqc2u3,-5,1,EAST,SERC,PJM
-VA,Williamsburg city,city,51830,37.269481,-76.708193,dq9kn2,-5,1,EAST,SERC,PJM
-VA,Winchester city,city,51840,39.173869,-78.176356,dqbqv5,-5,1,EAST,SERC,PJM
+VA,Williamsburg City,city,51830,37.269481,-76.708193,dq9kn2,-5,1,EAST,SERC,PJM
+VA,Winchester City,city,51840,39.173869,-78.176356,dqbqv5,-5,1,EAST,SERC,PJM
 VA,Wise,county,51195,36.974561,-82.62156,dnt4rg,-5,1,EAST,RF,PJM
 VA,Wythe,county,51197,36.899867,-81.083001,dnw3fv,-5,1,EAST,SERC,PJM
 VA,York,county,51199,37.219081,-76.561648,dq9e9z,-5,1,EAST,SERC,PJM

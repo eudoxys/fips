@@ -131,12 +131,20 @@ class TestStates(unittest.TestCase):
         self.assertEqual(types - set(fips.counties.TYPES),set())
 
     def test_counties_city_suffix(self):
-        # independent cities keep " city"; nothing else does
+        # every city ends in " City"; only two counties also do
         data = fips.counties.Counties()
-        city = data.COUNTY.str.endswith(" city")
-        self.assertTrue((data[city].TYPE == "city").all())
-        self.assertEqual(set(data[(data.TYPE == "city") & ~city].COUNTY),
-            {"Carson City"})
+        city = data.COUNTY.str.endswith(" City")
+        self.assertTrue(city[data.TYPE == "city"].all())
+        self.assertEqual(set(data[city & (data.TYPE != "city")].COUNTY),
+            {"Charles City","James City"})
+
+    def test_counties_COUNTY_title_case(self):
+        # every word is capitalized except minor words in official names
+        minor = {"and","of","the","du","qui"}
+        for county in fips.counties.Counties().COUNTY:
+            for word in county.replace("-"," ").split():
+                with self.subTest(COUNTY=county,word=word):
+                    self.assertTrue(word[0].isupper() or word in minor)
 
     def test_county_issue_5(self):
         # county and independent city of the same name (issue #5)
@@ -152,7 +160,7 @@ class TestStates(unittest.TestCase):
                 test = fips.counties.County(ST=st,COUNTY=county)
                 self.assertEqual(test.FIPS,fips_county)
                 self.assertEqual(test.TYPE,"county")
-                test = fips.counties.County(ST=st,COUNTY=f"{county} city")
+                test = fips.counties.County(ST=st,COUNTY=f"{county} City")
                 self.assertEqual(test.FIPS,fips_city)
                 self.assertEqual(test.TYPE,"city")
 
@@ -184,9 +192,9 @@ class TestCLI(unittest.TestCase):
         lines = self.run_cli("-f","csv","MD","Baltimore")
         self.assertEqual(len(lines),2)
         self.assertTrue(lines[1].startswith("MD,Baltimore,county,24005,"))
-        lines = self.run_cli("-f","csv","MD","Baltimore city")
+        lines = self.run_cli("-f","csv","MD","Baltimore City")
         self.assertEqual(len(lines),2)
-        self.assertTrue(lines[1].startswith("MD,Baltimore city,city,24510,"))
+        self.assertTrue(lines[1].startswith("MD,Baltimore City,city,24510,"))
 
     def test_cli_state_csv(self):
         lines = self.run_cli("-f","csv","CA")

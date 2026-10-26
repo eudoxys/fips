@@ -36,15 +36,15 @@ See https://www.eudoxys.com/fips.
         ST COUNTY                                                                                  
         CA Alameda  county  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC  CAISO
 
-- Get Baltimore city's FIPS data (an independent city; `fips MD Baltimore` gets Baltimore County)
+- Get Baltimore City's FIPS data (an independent city; `fips MD Baltimore` gets Baltimore County)
 
-        fips MD "Baltimore city"
+        fips MD "Baltimore City"
 
   Outputs
 
                            TYPE   FIPS        LAT        LON GEOHASH  TZOFFSET  DST SYSTEM  RO REGION
         ST COUNTY                                                                                    
-        MD Baltimore city  city  24510  39.300032 -76.610476  dqcx8d      -5.0    1   EAST  RF    PJM
+        MD Baltimore City  city  24510  39.300032 -76.610476  dqcx8d      -5.0    1   EAST  RF    PJM
 
 ### Python
 
@@ -112,18 +112,21 @@ See https://www.eudoxys.com/fips.
 
 ## County names
 
-`COUNTY` is the Census Bureau name without its qualifier ("County",
-"Parish", "Borough", "Census Area", "Municipality", "City and Borough");
-the qualifier is in the `TYPE` column instead (`county`, `parish`,
-`borough`, `census area`, `municipality`, `city and borough`, `city`,
-`district`).
+`COUNTY` is the Census Bureau name in title case, without its qualifier
+("County", "Parish", "Borough", "Census Area", "Municipality", "City and
+Borough"); the qualifier is in the `TYPE` column instead (`county`,
+`parish`, `borough`, `census area`, `municipality`, `city and borough`,
+`city`, `district`). Minor words stay lowercase as in the official names
+(`Lake of the Woods`, `Fond du Lac`).
 
-Independent cities are the exception: they keep the Census Bureau's
-lowercase ` city` suffix, so `Baltimore city` (FIPS 24510) is distinct
-from `Baltimore` County (24005). The same applies to St. Louis MO and to
-Virginia's 38 independent cities (e.g., `Fairfax` and `Fairfax city`,
-`Richmond` and `Richmond city`). Carson City NV is `Carson City`, with
-`TYPE` `city`.
+Independent cities are the exception: they keep a ` City` suffix, so
+`Baltimore City` (FIPS 24510) is distinct from `Baltimore` County
+(24005). The same applies to St. Louis MO and to Virginia's 38
+independent cities (e.g., `Fairfax` and `Fairfax City`, `Richmond` and
+`Richmond City`). Carson City NV is `Carson City`, with `TYPE` `city`.
+
+A name ending in ` City` isn't always a city: `Charles City` and
+`James City` VA are counties. Use `TYPE` to tell them apart.
 
 With this rule `(ST, COUNTY)` is a unique key, as is `FIPS`.
 
