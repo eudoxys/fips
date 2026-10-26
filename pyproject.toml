@@ -8,6 +8,10 @@ fips = ["*.py"]
 [tool.setuptools.dynamic]
 dependencies = {file=["requirements.txt"]}
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["tests.py", "test_*.py"]
+
 [project]
 name = "fips"
 version = "26.10.0"
