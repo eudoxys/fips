@@ -1,0 +1,58 @@
+name: Documentation
+
+on:
+  push:
+    branches: ["main"]
+    # pdoc reads fips/__init__.py and the public modules' docstrings
+    paths:
+      - "fips/*.py"
+      - "requirements.txt"
+      - "pyproject.toml"
+      - ".github/workflows/deploy-pages.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install package and pdoc
+        run: |
+          python -m pip install --upgrade pip
+          pip install pdoc .
+      # Private modules (fips._*) are excluded: pdoc would import them,
+      # and they are not public API.
+      - name: Create docs
+        run: >-
+          pdoc fips '!fips._.*' -o docs
+          --logo "https://github.com/eudoxys/.github/blob/main/eudoxys_banner.png?raw=true"
+          --logo-link "https://www.eudoxys.com/"
+          --math --mermaid
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
