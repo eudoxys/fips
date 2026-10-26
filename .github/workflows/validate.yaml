@@ -1,27 +1,50 @@
-name: validate
+name: Validation
 
+# Run only when code, tests, or dependencies change
 on:
   push:
     branches: [ main ]
+    paths: &paths
+      - "fips/**"
+      - "!**/*.md"
+      - "requirements.txt"
+      - "pyproject.toml"
+      - ".github/workflows/validate.yaml"
   pull_request:
     branches: [ main ]
+    paths: *paths
+  workflow_dispatch:
+
+# A newer push to the same branch/PR cancels the run in progress
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-
-  pypower:
+  validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.11 is the floor in requires-python (cli.py uses `.loc[*args]`)
+        python-version: [ "3.11", "3.12", "3.13", "3.14" ]
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Setup python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.12
-    
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+        cache-dependency-path: requirements.txt
+
     - name: Install packages
       run: |
-        python3 -m pip install --upgrade pip -r requirements.txt pylint
+        pip install --upgrade pip
+        pip install . pytest pylint   # non-editable: catches missing package-data
 
     - name: Analyse code
       run: |
@@ -30,6 +53,4 @@ jobs:
 
     - name: Run tests
       run: |
-        cd tests
-        pip install ..
-        python3 tests.py
+        pytest --durations=10
