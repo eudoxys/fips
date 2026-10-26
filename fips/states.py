@@ -1,12 +1,12 @@
 """US states data
 
 Examples
-========
+--------
 
 To get the state data for California use the command
 
     from fips import State
-    State(ST="CA")
+    print(State(ST="CA").to_dict())
 
 which outputs
 
@@ -101,11 +101,11 @@ class States(pd.DataFrame):
         `COUNTRY` is `"USA"`; see "Non-US codes" in `fips.states` for the
         package-specific codes used otherwise.
 
-      - `TZOFFSET`: state timezone offset
+      - `TZOFFSET`: standard time offset from UTC in hours
 
-      - `DST`: flag to indicate whether summer time is observed
+      - `DST`: `1` if daylight saving time is observed, otherwise `0`
 
-      - `SYSTEM`: system interconnection name
+      - `SYSTEM`: interconnection name
 
       - `RO`: NERC regional entity name(s), split using `"|"`. Empty
         (`""`) for Alaska and Hawaii, which are not within any NERC regional
@@ -115,8 +115,8 @@ class States(pd.DataFrame):
       - `COUNTRY`: ISO 3166-1 alpha-3 country code, `"USA"`, `"CAN"`, or
         `"MEX"`
 
-    Caveat
-    ------
+    Caveats
+    -------
 
       - Time zones and summer time are not uniformly observed in some states.
         See `fips.counties.Counties` for a more granular determination of
@@ -125,7 +125,7 @@ class States(pd.DataFrame):
       - Some states are in multiple systems and/or have multiple reliability
         organizations. In such cases only the system that covers the major
         population center(s) is provided, but the reliability organizations
-        are all listed, seperated by `"|"`.
+        are all listed, separated by `"|"`.
     """
     def __init__(self,
         with_territories:bool=False,

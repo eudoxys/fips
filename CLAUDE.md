@@ -81,7 +81,6 @@ Everything is fast and offline; the full suite runs in seconds. CI
   (source and rule in `fips/_data/README.md`, #8). Only CA, IL, and NV
   have county-level regions; KY, MS and other split states use one
   region, and `CA Los Angeles` as `LADWP` is pending review.
-- Docstring and README examples are out of date (#10).
 - The CLI's `-o|--output` applies only to `-f csv`; with the default
   table format it is ignored and the table goes to stdout.
 - The CLI's `--header`/`--index` are hidden, deprecated aliases of
@@ -95,7 +94,9 @@ Everything is fast and offline; the full suite runs in seconds. CI
   `fips/_data/README.md`.
 - When a column, signature, or output changes, update the module
   docstring example, the package docstring in `fips/__init__.py`, and
-  `README.md` in the same PR.
+  `README.md` in the same PR. Regenerate example output with
+  `pd.options.display.width = None`, `display.max_columns = None`, and
+  `display.max_rows = 10`.
 - Update `MANIFEST.md` when adding, moving, or deleting files, and run
   `python .github/check_manifest.py`.
 - Tests are pytest functions in `fips/_test/test_*.py`; shared fixtures

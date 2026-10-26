@@ -8,22 +8,23 @@ To get the county data for the WECC system use the command
     from fips import Counties
     print(Counties(use_index=["SYSTEM"],selection=["WECC"],set_index=["ST","COUNTY"]))
 
-
 which outputs
 
-                  SYSTEM    TYPE   FIPS        LAT  ...  TZOFFSET DST    RO     REGION
-    ST COUNTY                                       ...
-    AZ Apache       WECC  county  04001  35.385084  ...      -7.0   1  WECC  SOUTHWEST
-       Cochise      WECC  county  04003  31.840129  ...      -7.0   0  WECC  SOUTHWEST
-       Coconino     WECC  county  04005  35.829692  ...      -7.0   1  WECC  SOUTHWEST
-       Gila         WECC  county  04007  33.789618  ...      -7.0   0  WECC  SOUTHWEST
-       Graham       WECC  county  04009  32.931828  ...      -7.0   0  WECC  SOUTHWEST
-    ...              ...     ...    ...        ...  ...       ...  ..   ...        ...
-    WY Sweetwater   WECC  county  56037  41.660328  ...      -7.0   1  WECC  NORTHWEST
-       Teton        WECC  county  56039  44.048662  ...      -7.0   1  WECC  NORTHWEST
-       Uinta        WECC  county  56041  41.284726  ...      -7.0   1  WECC  NORTHWEST
-       Washakie     WECC  county  56043  43.878831  ...      -7.0   1  WECC  NORTHWEST
-       Weston       WECC  county  56045  43.846213  ...      -7.0   1  WECC  NORTHWEST
+                  SYSTEM    TYPE   FIPS        LAT         LON GEOHASH  TZOFFSET  DST    RO     REGION
+    ST COUNTY                                                                                         
+    AZ Apache       WECC  county  04001  35.385084 -109.490172  9w61k3      -7.0    1  WECC  SOUTHWEST
+       Cochise      WECC  county  04003  31.840129 -109.775163  9t9vnh      -7.0    0  WECC  SOUTHWEST
+       Coconino     WECC  county  04005  35.829692 -111.773728  9w2ebd      -7.0    1  WECC  SOUTHWEST
+       Gila         WECC  county  04007  33.789618 -110.811870  9w10nr      -7.0    0  WECC  SOUTHWEST
+       Graham       WECC  county  04009  32.931828 -109.878310  9tcg7e      -7.0    0  WECC  SOUTHWEST
+    ...              ...     ...    ...        ...         ...     ...       ...  ...   ...        ...
+    WY Sweetwater   WECC  county  56037  41.660328 -108.875677  9x6t42      -7.0    1  WECC  NORTHWEST
+       Teton        WECC  county  56039  44.048662 -110.426087  9xc6x4      -7.0    1  WECC  NORTHWEST
+       Uinta        WECC  county  56041  41.284726 -110.558947  9x36u5      -7.0    1  WECC  NORTHWEST
+       Washakie     WECC  county  56043  43.878831 -107.669052  9xg3tg      -7.0    1  WECC  NORTHWEST
+       Weston       WECC  county  56045  43.846213 -104.570020  9xv9km      -7.0    1  WECC  NORTHWEST
+
+    [407 rows x 10 columns]
 
 To tell an independent city from the county of the same name, use the
 " City" suffix
@@ -37,8 +38,8 @@ which outputs
     24005
     24510
 
-Caveat
-------
+Caveats
+-------
 
 - Regions are FERC's electric power market regions (the seven RTO/ISO
   markets plus the non-RTO `NORTHWEST`, `SOUTHEAST`, and `SOUTHWEST`),
@@ -52,7 +53,11 @@ Caveat
   region, even where the state spans several regions (e.g., Kentucky,
   Mississippi, Missouri).
 
-- Many counties are split among two or more regions.
+- Many counties are split among two or more regions; each county has
+  only one `REGION`.
+
+- The county list predates the 2019 Alaska and 2022 Connecticut Census
+  changes (issue #7).
 
 """
 
@@ -156,8 +161,6 @@ class Counties(pd.DataFrame):
 
       - `ST`: state abbreviation
 
-      - `FIPS`: county FIPS code
-
       - `COUNTY`: county-equivalent name in title case, without its
         "County", "Parish", "Borough", "Census Area", "Municipality", or
         "City and Borough" qualifier (see `TYPE`). Minor words stay
@@ -174,25 +177,28 @@ class Counties(pd.DataFrame):
       - `TYPE`: county-equivalent type (see `TYPES`), e.g., `"county"`,
         `"parish"`, or `"city"`
 
+      - `FIPS`: county FIPS code, a five-digit zero-padded string, e.g.,
+        `"06001"`
+
       - `LAT`: county centroid latitude
 
       - `LON`: county centroid longitude
 
       - `GEOHASH`: county centroid geohash
 
-      - `TZOFFSET`: state timezone offset
+      - `TZOFFSET`: standard time offset from UTC in hours
 
-      - `DST`: flag to indicate whether summer time is observed
+      - `DST`: `1` if daylight saving time is observed, otherwise `0`
 
-      - `SYSTEM`: system interconnection name
+      - `SYSTEM`: interconnection name
 
       - `RO`: NERC regional entity name. Empty (`""`) for Alaska and Hawaii
         counties, which are not within any NERC regional entity.
 
       - `REGION`: electricity market or balancing region name (see `REGIONS`)
 
-    Caveat
-    ------
+    Caveats
+    -------
 
       - Some counties located along timezone boundaries may be split across
         two timezones. In such cases, the timezone selected covers the
@@ -215,7 +221,7 @@ class Counties(pd.DataFrame):
 
           - `selection`: row selection based on `use_index` 
 
-          - `set_index`: index to to set on data frame after row selection
+          - `set_index`: index to set on data frame after row selection
         """
         data = _counties().copy()
         if not state is None:

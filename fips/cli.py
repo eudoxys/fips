@@ -98,8 +98,9 @@ def main(*args:list[str]) -> int:
             warnings.showwarning = lambda *x:None
 
         # handle help request
-        if options.locale[0] == "help":
-            print(__doc__)
+        if options.locale == ["help"]:
+            print("Run 'fips --help' for command line help, "
+                "or see https://www.eudoxys.com/fips for documentation.")
             return E_OK
 
         # get locale data
