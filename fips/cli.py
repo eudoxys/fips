@@ -4,7 +4,6 @@ import sys
 import argparse
 import pathlib
 import warnings
-import pandas as pd
 # pylint: disable=unused-import
 from fips.states import States
 from fips.counties import Counties
@@ -24,7 +23,7 @@ def main(*args:list[str]) -> int:
     Arguments
     ---------
 
-      - `*args`: command line arguments (`None` is `sys.argv`)
+      - `*args`: command line arguments (none reads `sys.argv`)
 
     Returns
     -------
@@ -32,11 +31,8 @@ def main(*args:list[str]) -> int:
       - `int`: return/exit code (see `E_*` codes)
     """
     # pylint: disable=too-many-return-statements
+    options = None
     try:
-
-        # support direct call to main
-        if args:
-            sys.argv = [__file__] + list(args)
 
         # setup command line parser
         parser = argparse.ArgumentParser(
@@ -47,7 +43,7 @@ def main(*args:list[str]) -> int:
         parser.add_argument("locale",
             nargs="+",
             help="specify state abbreviation and optional county name")
-        parser.add_argument("--debug",
+        parser.add_argument("-d","--debug",
             action="store_true",
             help="enable debug traceback on exceptions",
             )
@@ -56,13 +52,25 @@ def main(*args:list[str]) -> int:
             default="table",
             help="specify the output format",
             )
-        parser.add_argument("--header",
+        parser.add_argument("-H","--no-header",
             action="store_false",
+            dest="header",
             help="disable CSV header output",
             )
-        parser.add_argument("--index",
+        parser.add_argument("--header", # deprecated alias of --no-header
             action="store_false",
+            dest="header",
+            help=argparse.SUPPRESS,
+            )
+        parser.add_argument("--no-index",
+            action="store_false",
+            dest="index",
             help="disable CSV index output",
+            )
+        parser.add_argument("--index", # deprecated alias of --no-index
+            action="store_false",
+            dest="index",
+            help=argparse.SUPPRESS,
             )
         parser.add_argument("-o","--output",
             type=pathlib.Path,
@@ -70,16 +78,16 @@ def main(*args:list[str]) -> int:
             metavar="OUTPUT",
             help="specify the CSV output filename",
             )
-        parser.add_argument("--warning",
-            action="store_false",
-            help="disable warning messages from python",
+        parser.add_argument("-w","--warning",
+            action="store_true",
+            help="enable warning messages from python",
             )
 
-        # parse arguments
-        args = parser.parse_args()
+        # parse arguments (`None` reads `sys.argv`)
+        options = parser.parse_args(list(args) if args else None)
 
         # setup warning handling
-        if args.warning:
+        if options.warning:
             warnings.showwarning = lambda *x:print(
                 f"WARNING [{__package__}]:",
                 x[0],
@@ -90,38 +98,38 @@ def main(*args:list[str]) -> int:
             warnings.showwarning = lambda *x:None
 
         # handle help request
-        if args.locale[0] == "help":
+        if options.locale[0] == "help":
             print(__doc__)
             return E_OK
 
         # get locale data
-        match len(args.locale):
+        match len(options.locale):
             case 1:
                 result = States(
                     with_territories=True,
                     with_canada=True,
                     with_mexico=True,
-                    ).set_index("ST").sort_index().loc[args.locale]
+                    ).set_index("ST").sort_index().loc[options.locale]
             case 2:
-                result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[[tuple(args.locale)]]
+                result = Counties().set_index(["ST","COUNTY"]).sort_index().loc[[tuple(options.locale)]]
             case _:
                 print("ERROR [fips]: expected STATE [COUNTY], "
-                    f"got {len(args.locale)} arguments",
+                    f"got {len(options.locale)} arguments",
                     file=sys.stderr)
                 return E_SYNTAX
 
         # print result using format
-        match args.format:
+        match options.format:
             case "table":
                 print(result)
             case "csv":
                 result.to_csv(
-                    args.output if args.output else sys.stdout,
-                    index=args.index,
-                    header=args.header,
+                    options.output if options.output else sys.stdout,
+                    index=options.index,
+                    header=options.header,
                     )
             case _:
-                print(f"ERROR [fips]: {args.format} is not a valid format",
+                print(f"ERROR [fips]: {options.format} is not a valid format",
                     file=sys.stderr)
                 return E_SYNTAX
 
@@ -130,15 +138,11 @@ def main(*args:list[str]) -> int:
     # pylint: disable=broad-exception-caught
     except Exception as err:
 
-        if getattr(args,"debug"):
+        if getattr(options,"debug",False):
             raise
 
-        print(f"ERROR [fips]: {err}")
+        print(f"ERROR [fips]: {err}",file=sys.stderr)
         return E_FAILED
 
-if __name__ == '__main__':
-    pd.options.display.width = None
-    pd.options.display.max_columns = None
-    pd.options.display.max_rows = None
-    main("CA")
-    main("CA","Alameda")
+if __name__ == "__main__":
+    sys.exit(main())

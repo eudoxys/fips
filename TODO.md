@@ -22,7 +22,7 @@
 
 - [ ] Parse the embedded tables once instead of on every call (#15)
 
-- [ ] Align CLI options and error handling with Eudoxys conventions (#11)
+- [x] Align CLI options and error handling with Eudoxys conventions (see `fips/cli.py`, #11)
 
 # Tests and docs
 

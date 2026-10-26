@@ -15,21 +15,25 @@ Positional arguments
 Optional arguments
 ------------------
 
-  - `--debug`: enable traceback on exceptions
+  - `-d|--debug`: enable traceback on exceptions
 
   - `-f|--format FORMAT`: specify format. Valid formats are `table`(the default)
     to output a human readable data frame format, or `csv` to output in machine
     readable CSV format.
 
-  - `--header`: disable CSV header output
+  - `-H|--no-header`: disable CSV header output (`--header` is a deprecated
+    alias)
 
   - `-h|--help`: get online documentation
 
-  - `--index`: disable CSV index output
+  - `--no-index`: disable CSV index output (`--index` is a deprecated alias)
 
   - `-o|--output`: specify CSV output filename (default is `/dev/stdout`)
 
-  - `--warning`: enable warning messages
+  - `-w|--warning`: enable warning messages (hidden by default)
+
+Errors are reported as a one-line message on stderr with a nonzero exit
+code; use `-d|--debug` to get the full traceback instead.
 
 Description
 -----------
