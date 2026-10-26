@@ -105,6 +105,34 @@ class TestStates(unittest.TestCase):
         self.assertEqual(fips.states.State(ST="KY").TZOFFSET,-5.0)
         self.assertEqual(fips.states.State(ST="SK").DST,0)
 
+    def test_states_issue_16(self):
+        data = fips.states.States(with_territories=True,
+            with_canada=True,with_mexico=True)
+        # every row has a country; only US rows have numeric FIPS codes
+        self.assertEqual(set(data.COUNTRY),{"USA","CAN","MEX"})
+        for _,row in data.iterrows():
+            with self.subTest(ST=row.ST):
+                self.assertEqual(row.FIPS.isdigit(),row.COUNTRY == "USA")
+        self.assertTrue(data.ST.is_unique)
+        self.assertTrue(data.FIPS.is_unique)
+        canada = data[data.COUNTRY=="CAN"]
+        self.assertEqual(sorted(canada.FIPS),[f"C{n}" for n in range(10)])
+        # Baja California is named as the state, not the country
+        bc = fips.states.State(ST="BCN")
+        self.assertEqual(bc.STATE,"Baja California")
+        self.assertEqual(bc.FIPS,"M0")
+        self.assertEqual(bc.COUNTRY,"MEX")
+        with self.assertRaises(KeyError):
+            fips.states.State(ST="MX")
+        # AK and HI are not in a NERC regional entity
+        for st in ["AK","HI"]:
+            with self.subTest(ST=st):
+                self.assertEqual(fips.states.State(ST=st).RO,"")
+                counties = fips.counties.Counties(st)
+                self.assertEqual(set(counties.RO),{""})
+        self.assertNotIn("NERC",set(data.RO))
+        self.assertNotIn("NERC",set(fips.counties.Counties().RO))
+
     def test_counties_ST_COUNTY(self):
         test = fips.counties.Counties("CA",use_index="COUNTY").loc["Alameda"]
         self.assertEqual(test.FIPS,"06001")

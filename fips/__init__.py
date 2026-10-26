@@ -42,7 +42,9 @@ State data includes the following:
 
   - `ST`: state abbreviation, e.g., `"CA"`
 
-  - `FIPS`: state FIPS code, e.g., `"06"`
+  - `FIPS`: state FIPS code, e.g., `"06"`. Canadian provinces and Baja
+    California use package-specific codes (`"C0"`…`"C9"`, `"M0"`) that are
+    not FIPS codes; see `fips.states`.
 
   - `TZOFFSET`: state timezone offset (note that some states have more than one
     timezone, in which case the largest population center timezone is used.)
@@ -51,7 +53,10 @@ State data includes the following:
 
   - `SYSTEM`: system interconnection name
 
-  - `RO`: reliability organization name(s)
+  - `RO`: NERC regional entity name(s), empty for Alaska and Hawaii
+
+  - `COUNTRY`: ISO 3166-1 alpha-3 country code, `"USA"`, `"CAN"`, or
+    `"MEX"`
 
 County data includes the following:
 

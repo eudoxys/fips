@@ -10,7 +10,26 @@ To get the state data for California use the command
 
 which outputs
 
-    {'ST': 'CA', 'STATE': 'California', 'FIPS': '06', 'TZOFFSET': -8.0, 'DST': 1, 'SYSTEM': 'WECC', 'RO': 'WECC'}
+    {'ST': 'CA', 'STATE': 'California', 'FIPS': '06', 'TZOFFSET': -8.0, 'DST': 1, 'SYSTEM': 'WECC', 'RO': 'WECC', 'COUNTRY': 'USA'}
+
+Non-US codes
+------------
+
+Canadian provinces (`with_canada=True`) and Baja California
+(`with_mexico=True`) are not covered by the Census Bureau FIPS standard.
+For these rows:
+
+  - `ST` is the ISO 3166-2 subdivision code (e.g., `"BC"` for British
+    Columbia, `"BCN"` for Baja California, which can't use `"BC"`).
+
+  - `FIPS` is a package-specific code, `"C0"` through `"C9"` for the
+    provinces in alphabetical order and `"M0"` for Baja California. These
+    are **not** FIPS codes and are not assigned by any standards body;
+    they only provide a unique, non-numeric `FIPS` key that can't collide
+    with a US state code. Use `COUNTRY` to tell these rows apart.
+
+  - `COUNTRY` is the ISO 3166-1 alpha-3 country code (`"CAN"` or `"MEX"`;
+    `"USA"` for states, DC, and US territories).
 
 """
 
@@ -74,11 +93,14 @@ class States(pd.DataFrame):
     Columns
     -------
 
-      - `STATE`: state name
+      - `STATE`: state, territory, or province name
 
-      - `ST`: state abbreviation
+      - `ST`: USPS state abbreviation, or the ISO 3166-2 subdivision code
+        outside the US
 
-      - `FIPS`: state FIPS code
+      - `FIPS`: state FIPS code. This is a Census Bureau FIPS code only when
+        `COUNTRY` is `"USA"`; see "Non-US codes" in `fips.states` for the
+        package-specific codes used otherwise.
 
       - `TZOFFSET`: state timezone offset
 
@@ -86,7 +108,13 @@ class States(pd.DataFrame):
 
       - `SYSTEM`: system interconnection name
 
-      - `RO`: reliability organization name(s), split using `"|"`
+      - `RO`: NERC regional entity name(s), split using `"|"`. Empty
+        (`""`) for Alaska and Hawaii, which are not within any NERC regional
+        entity. Puerto Rico and the Virgin Islands are not either; their
+        `RO` repeats their own code (`"PR"`, `"VI"`) as a placeholder.
+
+      - `COUNTRY`: ISO 3166-1 alpha-3 country code, `"USA"`, `"CAN"`, or
+        `"MEX"`
 
     Caveat
     ------
@@ -113,86 +141,87 @@ class States(pd.DataFrame):
 
           - `with_territories`: append US territories (PR and VI)
 
-          - `with_canada`: append Canadian provinces (provinces listed
-            under "STATE"--sorry)
+          - `with_canada`: append Canadian provinces (`COUNTRY` is
+            `"CAN"`; `FIPS` is a package-specific code, not a FIPS code)
 
-          - `with_mexico`: append Baja California (listed under "STATE" as
-            `"MEXICO"`)
+          - `with_mexico`: append Baja California (`ST` is `"BCN"`,
+            `COUNTRY` is `"MEX"`; `FIPS` is a package-specific code, not a
+            FIPS code)
 
           - `use_index`: specify index to initially set
         """
         data = pd.DataFrame(
-            columns=["STATE","ST","FIPS","TZOFFSET","DST","SYSTEM","RO"],
+            columns=["STATE","ST","FIPS","TZOFFSET","DST","SYSTEM","RO","COUNTRY"],
             data=[
-                ["Alabama","AL","01",-6.0,1,"EAST","SERC"],
-                ["Alaska","AK","02",-9.0,1,"AK","NERC"],
-                ["Arizona","AZ","04",-7.0,0,"WECC","WECC"],
-                ["Arkansas","AR","05",-6.0,1,"EAST","SERC"],
-                ["California","CA","06",-8.0,1,"WECC","WECC"],
-                ["Colorado","CO","08",-7.0,1,"WECC","WECC"],
-                ["Connecticut","CT","09",-5.0,1,"EAST","NPCC"],
-                ["Delaware","DE","10",-5.0,1,"EAST","RF"],
-                ["District of Columbia","DC","11",-5.0,1,"EAST","RF"],
-                ["Florida","FL","12",-5.0,1,"EAST","SERC"],
-                ["Georgia","GA","13",-5.0,1,"EAST","SERC"],
-                ["Hawaii","HI","15",-10.0,0,"HI","NERC"],
-                ["Idaho","ID","16",-7.0,1,"WECC","WECC"],
-                ["Illinois","IL","17",-6.0,1,"EAST","SERC|RF|MRO"],
-                ["Indiana","IN","18",-5.0,1,"EAST","RF"],
-                ["Iowa","IA","19",-6.0,1,"EAST","MRO"],
-                ["Kansas","KS","20",-6.0,1,"EAST","MRO"],
-                ["Kentucky","KY","21",-5.0,1,"EAST","SERC"],
-                ["Louisiana","LA","22",-6.0,1,"EAST","SERC"],
-                ["Maine","ME","23",-5.0,1,"EAST","NPCC"],
-                ["Maryland","MD","24",-5.0,1,"EAST","RF"],
-                ["Massachusetts","MA","25",-5.0,1,"EAST","NPCC"],
-                ["Michigan","MI","26",-5.0,1,"EAST","RF|MRO"],
-                ["Minnesota","MN","27",-6.0,1,"EAST","MRO"],
-                ["Mississippi","MS","28",-6.0,1,"EAST","SERC"],
-                ["Missouri","MO","29",-6.0,1,"EAST","SERC|MRO"],
-                ["Montana","MT","30",-7.0,1,"WECC","WECC|MRO"],
-                ["Nebraska","NE","31",-6.0,1,"EAST","MRO"],
-                ["Nevada","NV","32",-7.0,1,"WECC","WECC"],
-                ["New Hampshire","NH","33",-5.0,1,"EAST","NPCC"],
-                ["New Jersey","NJ","34",-5.0,1,"EAST","RF"],
-                ["New Mexico","NM","35",-7.0,1,"WECC","WECC|MRO"],
-                ["New York","NY","36",-5.0,1,"EAST","NPCC"],
-                ["North Carolina","NC","37",-5.0,1,"EAST","SERC"],
-                ["North Dakota","ND","38",-6.0,1,"EAST","MRO"],
-                ["Ohio","OH","39",-5.0,1,"EAST","RF"],
-                ["Oklahoma","OK","40",-6.0,1,"EAST","MRO|SERC"],
-                ["Oregon","OR","41",-8.0,1,"WECC","WECC"],
-                ["Pennsylvania","PA","42",-5.0,1,"EAST","RF"],
-                ["Rhode Island","RI","44",-5.0,1,"EAST","NPCC"],
-                ["South Carolina","SC","45",-5.0,1,"EAST","SERC"],
-                ["South Dakota","SD","46",-6.0,1,"EAST","MRO|WECC"],
-                ["Tennessee","TN","47",-6.0,1,"EAST","SERC"],
-                ["Texas","TX","48",-6.0,1,"ERCOT","TRE|MRO|WECC"],
-                ["Utah","UT","49",-7.0,1,"WECC","WECC"],
-                ["Vermont","VT","50",-5.0,1,"EAST","NPCC"],
-                ["Virginia","VA","51",-5.0,1,"EAST","SERC|RF"],
-                ["Washington","WA","53",-8.0,1,"WECC","WECC"],
-                ["West Virginia","WV","54",-5.0,1,"EAST","RF"],
-                ["Wisconsin","WI","55",-6.0,1,"EAST","MRO|RF"],
-                ["Wyoming","WY","56",-7.0,1,"WECC","WECC"],
+                ["Alabama","AL","01",-6.0,1,"EAST","SERC","USA"],
+                ["Alaska","AK","02",-9.0,1,"AK","","USA"],
+                ["Arizona","AZ","04",-7.0,0,"WECC","WECC","USA"],
+                ["Arkansas","AR","05",-6.0,1,"EAST","SERC","USA"],
+                ["California","CA","06",-8.0,1,"WECC","WECC","USA"],
+                ["Colorado","CO","08",-7.0,1,"WECC","WECC","USA"],
+                ["Connecticut","CT","09",-5.0,1,"EAST","NPCC","USA"],
+                ["Delaware","DE","10",-5.0,1,"EAST","RF","USA"],
+                ["District of Columbia","DC","11",-5.0,1,"EAST","RF","USA"],
+                ["Florida","FL","12",-5.0,1,"EAST","SERC","USA"],
+                ["Georgia","GA","13",-5.0,1,"EAST","SERC","USA"],
+                ["Hawaii","HI","15",-10.0,0,"HI","","USA"],
+                ["Idaho","ID","16",-7.0,1,"WECC","WECC","USA"],
+                ["Illinois","IL","17",-6.0,1,"EAST","SERC|RF|MRO","USA"],
+                ["Indiana","IN","18",-5.0,1,"EAST","RF","USA"],
+                ["Iowa","IA","19",-6.0,1,"EAST","MRO","USA"],
+                ["Kansas","KS","20",-6.0,1,"EAST","MRO","USA"],
+                ["Kentucky","KY","21",-5.0,1,"EAST","SERC","USA"],
+                ["Louisiana","LA","22",-6.0,1,"EAST","SERC","USA"],
+                ["Maine","ME","23",-5.0,1,"EAST","NPCC","USA"],
+                ["Maryland","MD","24",-5.0,1,"EAST","RF","USA"],
+                ["Massachusetts","MA","25",-5.0,1,"EAST","NPCC","USA"],
+                ["Michigan","MI","26",-5.0,1,"EAST","RF|MRO","USA"],
+                ["Minnesota","MN","27",-6.0,1,"EAST","MRO","USA"],
+                ["Mississippi","MS","28",-6.0,1,"EAST","SERC","USA"],
+                ["Missouri","MO","29",-6.0,1,"EAST","SERC|MRO","USA"],
+                ["Montana","MT","30",-7.0,1,"WECC","WECC|MRO","USA"],
+                ["Nebraska","NE","31",-6.0,1,"EAST","MRO","USA"],
+                ["Nevada","NV","32",-7.0,1,"WECC","WECC","USA"],
+                ["New Hampshire","NH","33",-5.0,1,"EAST","NPCC","USA"],
+                ["New Jersey","NJ","34",-5.0,1,"EAST","RF","USA"],
+                ["New Mexico","NM","35",-7.0,1,"WECC","WECC|MRO","USA"],
+                ["New York","NY","36",-5.0,1,"EAST","NPCC","USA"],
+                ["North Carolina","NC","37",-5.0,1,"EAST","SERC","USA"],
+                ["North Dakota","ND","38",-6.0,1,"EAST","MRO","USA"],
+                ["Ohio","OH","39",-5.0,1,"EAST","RF","USA"],
+                ["Oklahoma","OK","40",-6.0,1,"EAST","MRO|SERC","USA"],
+                ["Oregon","OR","41",-8.0,1,"WECC","WECC","USA"],
+                ["Pennsylvania","PA","42",-5.0,1,"EAST","RF","USA"],
+                ["Rhode Island","RI","44",-5.0,1,"EAST","NPCC","USA"],
+                ["South Carolina","SC","45",-5.0,1,"EAST","SERC","USA"],
+                ["South Dakota","SD","46",-6.0,1,"EAST","MRO|WECC","USA"],
+                ["Tennessee","TN","47",-6.0,1,"EAST","SERC","USA"],
+                ["Texas","TX","48",-6.0,1,"ERCOT","TRE|MRO|WECC","USA"],
+                ["Utah","UT","49",-7.0,1,"WECC","WECC","USA"],
+                ["Vermont","VT","50",-5.0,1,"EAST","NPCC","USA"],
+                ["Virginia","VA","51",-5.0,1,"EAST","SERC|RF","USA"],
+                ["Washington","WA","53",-8.0,1,"WECC","WECC","USA"],
+                ["West Virginia","WV","54",-5.0,1,"EAST","RF","USA"],
+                ["Wisconsin","WI","55",-6.0,1,"EAST","MRO|RF","USA"],
+                ["Wyoming","WY","56",-7.0,1,"WECC","WECC","USA"],
             ] + ([
-                ["Puerto Rico","PR","72",-4.0,0,"PR","PR"],
-                ["Virgin Islands","VI","78",-4.0,0,"VI","VI"],
+                ["Puerto Rico","PR","72",-4.0,0,"PR","PR","USA"],
+                ["Virgin Islands","VI","78",-4.0,0,"VI","VI","USA"],
                 ] if with_territories else []
             ) + ([
-                ["Alberta","AB","C0",-7.0,1,"WECC","WECC"],
-                ["British Columbia","BC","C1",-8.0,1,"WECC","WECC"],
-                ["Manitoba","MB","C2",-6.0,1,"EAST","MRO"],
-                ["New Brunswick","NB","C3",-4.0,1,"EAST","NPCC"],
-                ["Newfoundland","NL","C4",-3.5,1,"EAST","NPCC"],
-                ["Nova Scotia","NS","C5",-4.0,1,"EAST","NPCC"],
-                ["Ontario","ON","C6",-5.0,1,"EAST","NPCC"],
-                ["Prince Edward Island","PE","C7",-4.0,1,"EAST","NPCC"],
-                ["Quebec","QC","C8",-5.0,1,"QUEBEC","NPCC"],
-                ["Saskatchewan","SK","C9",-6.0,0,"EAST","MRO"],
+                ["Alberta","AB","C0",-7.0,1,"WECC","WECC","CAN"],
+                ["British Columbia","BC","C1",-8.0,1,"WECC","WECC","CAN"],
+                ["Manitoba","MB","C2",-6.0,1,"EAST","MRO","CAN"],
+                ["New Brunswick","NB","C3",-4.0,1,"EAST","NPCC","CAN"],
+                ["Newfoundland","NL","C4",-3.5,1,"EAST","NPCC","CAN"],
+                ["Nova Scotia","NS","C5",-4.0,1,"EAST","NPCC","CAN"],
+                ["Ontario","ON","C6",-5.0,1,"EAST","NPCC","CAN"],
+                ["Prince Edward Island","PE","C7",-4.0,1,"EAST","NPCC","CAN"],
+                ["Quebec","QC","C8",-5.0,1,"QUEBEC","NPCC","CAN"],
+                ["Saskatchewan","SK","C9",-6.0,0,"EAST","MRO","CAN"],
             ] if with_canada else []
             ) + ([
-                ["Mexico","MX","M0",-8.0,1,"WECC","WECC|MFEC"],
+                ["Baja California","BCN","M0",-8.0,1,"WECC","WECC|MFEC","MEX"],
                 ] if with_mexico else []
             ),
         )

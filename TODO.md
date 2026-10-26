@@ -14,7 +14,7 @@
 
 - [ ] Review `REGION` assignments and cite sources (#8)
 
-- [ ] Document non-US and non-NERC codes in `States` (#16)
+- [x] Document non-US and non-NERC codes in `States`; add `COUNTRY` (see `fips/states.py`, #16)
 
 # Code
 

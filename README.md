@@ -65,19 +65,19 @@ See https://www.eudoxys.com/fips.
 
   Outputs
 
-                           STATE FIPS  TZOFFSET  DST SYSTEM            RO
-        ST                                                               
-        AL               Alabama   01      -6.0    1   EAST          SERC
-        AK                Alaska   02      -9.0    1     AK          NERC
-        AZ               Arizona   04      -7.0    0   WECC          WECC
-        AR              Arkansas   05      -6.0    1   EAST          SERC
-        CA            California   06      -8.0    1   WECC          WECC
-        ...                  ...  ...       ...  ...    ...           ...
-        VA              Virginia   51      -5.0    1   EAST       SERC|RF
-        WA            Washington   53      -8.0    1   WECC          WECC
-        WV         West Virginia   54      -5.0    1   EAST            RF
-        WI             Wisconsin   55      -6.0    1   EAST        MRO|RF
-        WY               Wyoming   56      -7.0    1   WECC          WECC
+            STATE FIPS  TZOFFSET  DST SYSTEM       RO COUNTRY
+        ST                                                           
+        AL        Alabama   01      -6.0    1   EAST     SERC     USA
+        AK         Alaska   02      -9.0    1     AK              USA
+        AZ        Arizona   04      -7.0    0   WECC     WECC     USA
+        AR       Arkansas   05      -6.0    1   EAST     SERC     USA
+        CA     California   06      -8.0    1   WECC     WECC     USA
+        ..            ...  ...       ...  ...    ...      ...     ...
+        VA       Virginia   51      -5.0    1   EAST  SERC|RF     USA
+        WA     Washington   53      -8.0    1   WECC     WECC     USA
+        WV  West Virginia   54      -5.0    1   EAST       RF     USA
+        WI      Wisconsin   55      -6.0    1   EAST   MRO|RF     USA
+        WY        Wyoming   56      -7.0    1   WECC     WECC     USA
 
 - Get Alameda County's GEOHASH code
 
@@ -97,11 +97,11 @@ See https://www.eudoxys.com/fips.
 
                                    TYPE   FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO     REGION
         ST COUNTY                                                                                                   
-        AK Aleutians East       borough  02013  55.245044 -161.997477  b3uf39      -9.0    1     AK  NERC     ALASKA
-           Aleutians West   census area  02016  51.948964  179.621188  zcpxx3     -10.0    1     AK  NERC     ALASKA
-           Anchorage       municipality  02020  61.174250 -149.284329  bdvu4b      -9.0    1     AK  NERC     ALASKA
-           Bethel           census area  02050  60.929141 -160.152625  b6y4ee      -9.0    1     AK  NERC     ALASKA
-           Bristol Bay          borough  02060  58.741647 -156.966909  bd2qhj      -9.0    1     AK  NERC     ALASKA
+        AK Aleutians East       borough  02013  55.245044 -161.997477  b3uf39      -9.0    1     AK           ALASKA
+           Aleutians West   census area  02016  51.948964  179.621188  zcpxx3     -10.0    1     AK           ALASKA
+           Anchorage       municipality  02020  61.174250 -149.284329  bdvu4b      -9.0    1     AK           ALASKA
+           Bethel           census area  02050  60.929141 -160.152625  b6y4ee      -9.0    1     AK           ALASKA
+           Bristol Bay          borough  02060  58.741647 -156.966909  bd2qhj      -9.0    1     AK           ALASKA
         ...                         ...    ...        ...         ...     ...       ...  ...    ...   ...        ...
         WY Sweetwater            county  56037  41.660328 -108.875677  9x6t42      -7.0    1   WECC  WECC  NORTHWEST
            Teton                 county  56039  44.048662 -110.426087  9xc6x4      -7.0    1   WECC  WECC  NORTHWEST
