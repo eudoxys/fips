@@ -116,6 +116,54 @@ class TestStates(unittest.TestCase):
         self.assertEqual(len(test),99)
         self.assertEqual(set(test.REGION),{"MISO"})
 
+    def test_counties_FIPS_unique(self):
+        data = fips.counties.Counties()
+        dups = data[data.FIPS.duplicated(keep=False)]
+        self.assertTrue(dups.empty,f"duplicate FIPS:\n{dups}")
+
+    def test_counties_ST_COUNTY_unique(self):
+        data = fips.counties.Counties()
+        dups = data[data.duplicated(["ST","COUNTY"],keep=False)]
+        self.assertTrue(dups.empty,f"duplicate (ST,COUNTY):\n{dups}")
+
+    def test_counties_TYPE_valid(self):
+        types = set(fips.counties.Counties().TYPE)
+        self.assertEqual(types - set(fips.counties.TYPES),set())
+
+    def test_counties_city_suffix(self):
+        # every city ends in " City"; only two counties also do
+        data = fips.counties.Counties()
+        city = data.COUNTY.str.endswith(" City")
+        self.assertTrue(city[data.TYPE == "city"].all())
+        self.assertEqual(set(data[city & (data.TYPE != "city")].COUNTY),
+            {"Charles City","James City"})
+
+    def test_counties_COUNTY_title_case(self):
+        # every word is capitalized except minor words in official names
+        minor = {"and","of","the","du","qui"}
+        for county in fips.counties.Counties().COUNTY:
+            for word in county.replace("-"," ").split():
+                with self.subTest(COUNTY=county,word=word):
+                    self.assertTrue(word[0].isupper() or word in minor)
+
+    def test_county_issue_5(self):
+        # county and independent city of the same name (issue #5)
+        for st,county,fips_county,fips_city in [
+                ("MD","Baltimore","24005","24510"),
+                ("MO","St. Louis","29189","29510"),
+                ("VA","Fairfax","51059","51600"),
+                ("VA","Franklin","51067","51620"),
+                ("VA","Richmond","51159","51760"),
+                ("VA","Roanoke","51161","51770"),
+                ]:
+            with self.subTest(ST=st,COUNTY=county):
+                test = fips.counties.County(ST=st,COUNTY=county)
+                self.assertEqual(test.FIPS,fips_county)
+                self.assertEqual(test.TYPE,"county")
+                test = fips.counties.County(ST=st,COUNTY=f"{county} City")
+                self.assertEqual(test.FIPS,fips_city)
+                self.assertEqual(test.TYPE,"city")
+
 class TestCLI(unittest.TestCase):
 
     def run_cli(self,*args):
@@ -132,13 +180,21 @@ class TestCLI(unittest.TestCase):
         self.assertIn("FIPS",lines[0])
         self.assertIn("GEOHASH",lines[0])
         self.assertEqual(lines[1].split(),["ST","COUNTY"])
-        self.assertEqual(lines[2].split()[:3],["CA","Alameda","06001"])
+        self.assertEqual(lines[2].split()[:4],["CA","Alameda","county","06001"])
 
     def test_cli_county_csv(self):
         lines = self.run_cli("-f","csv","CA","Alameda")
         self.assertEqual(len(lines),2)
-        self.assertTrue(lines[0].startswith("ST,COUNTY,FIPS,LAT,LON,GEOHASH,"))
-        self.assertTrue(lines[1].startswith("CA,Alameda,06001,"))
+        self.assertTrue(lines[0].startswith("ST,COUNTY,TYPE,FIPS,LAT,LON,GEOHASH,"))
+        self.assertTrue(lines[1].startswith("CA,Alameda,county,06001,"))
+
+    def test_cli_county_issue_5(self):
+        lines = self.run_cli("-f","csv","MD","Baltimore")
+        self.assertEqual(len(lines),2)
+        self.assertTrue(lines[1].startswith("MD,Baltimore,county,24005,"))
+        lines = self.run_cli("-f","csv","MD","Baltimore City")
+        self.assertEqual(len(lines),2)
+        self.assertTrue(lines[1].startswith("MD,Baltimore City,city,24510,"))
 
     def test_cli_state_csv(self):
         lines = self.run_cli("-f","csv","CA")

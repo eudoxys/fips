@@ -32,9 +32,19 @@ See https://www.eudoxys.com/fips.
 
   Outputs
 
-                     FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
-        ST COUNTY                                                                   
-        CA Alameda  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC
+                      TYPE   FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO REGION
+        ST COUNTY                                                                                  
+        CA Alameda  county  06001  37.647139 -121.912488  9q9q1v      -8.0    1   WECC  WECC  CAISO
+
+- Get Baltimore City's FIPS data (an independent city; `fips MD Baltimore` gets Baltimore County)
+
+        fips MD "Baltimore City"
+
+  Outputs
+
+                           TYPE   FIPS        LAT        LON GEOHASH  TZOFFSET  DST SYSTEM  RO REGION
+        ST COUNTY                                                                                    
+        MD Baltimore City  city  24510  39.300032 -76.610476  dqcx8d      -5.0    1   EAST  RF    PJM
 
 ### Python
 
@@ -84,21 +94,41 @@ See https://www.eudoxys.com/fips.
 
   Outputs
 
-                        FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO
-        ST COUNTY                                                                      
-        AL Autauga     01001  32.532237  -86.646440  djf3h6      -6.0    1   EAST  SERC
-           Baldwin     01003  30.659218  -87.746067  dj3w7m      -6.0    1   EAST  SERC
-           Barbour     01005  31.870253  -85.405104  djem29      -6.0    1   EAST  SERC
-           Bibb        01007  33.015893  -87.127148  djf5c6      -6.0    1   EAST  SERC
-           Blount      01009  33.977358  -86.566440  dn43q1      -6.0    1   EAST  SERC
-        ...              ...        ...         ...     ...       ...  ...    ...   ...
-        WY Sweetwater  56037  41.660328 -108.875677  9x6t42      -7.0    1   WECC  WECC
-           Teton       56039  44.048662 -110.426087  9xc6x4      -7.0    1   WECC  WECC
-           Uinta       56041  41.284726 -110.558947  9x36u5      -7.0    1   WECC  WECC
-           Washakie    56043  43.878831 -107.669052  9xg3tg      -7.0    1   WECC  WECC
-           Weston      56045  43.846213 -104.570020  9xv9km      -7.0    1   WECC  WECC
+                                   TYPE   FIPS        LAT         LON GEOHASH  TZOFFSET  DST SYSTEM    RO     REGION
+        ST COUNTY                                                                                                   
+        AK Aleutians East       borough  02013  55.245044 -161.997477  b3uf39      -9.0    1     AK  NERC     ALASKA
+           Aleutians West   census area  02016  51.948964  179.621188  zcpxx3     -10.0    1     AK  NERC     ALASKA
+           Anchorage       municipality  02020  61.174250 -149.284329  bdvu4b      -9.0    1     AK  NERC     ALASKA
+           Bethel           census area  02050  60.929141 -160.152625  b6y4ee      -9.0    1     AK  NERC     ALASKA
+           Bristol Bay          borough  02060  58.741647 -156.966909  bd2qhj      -9.0    1     AK  NERC     ALASKA
+        ...                         ...    ...        ...         ...     ...       ...  ...    ...   ...        ...
+        WY Sweetwater            county  56037  41.660328 -108.875677  9x6t42      -7.0    1   WECC  WECC  NORTHWEST
+           Teton                 county  56039  44.048662 -110.426087  9xc6x4      -7.0    1   WECC  WECC  NORTHWEST
+           Uinta                 county  56041  41.284726 -110.558947  9x36u5      -7.0    1   WECC  WECC  NORTHWEST
+           Washakie              county  56043  43.878831 -107.669052  9xg3tg      -7.0    1   WECC  WECC  NORTHWEST
+           Weston                county  56045  43.846213 -104.570020  9xv9km      -7.0    1   WECC  WECC  NORTHWEST
 
-        [3142 rows x 8 columns]
+        [3142 rows x 10 columns]
+
+## County names
+
+`COUNTY` is the Census Bureau name in title case, without its qualifier
+("County", "Parish", "Borough", "Census Area", "Municipality", "City and
+Borough"); the qualifier is in the `TYPE` column instead (`county`,
+`parish`, `borough`, `census area`, `municipality`, `city and borough`,
+`city`, `district`). Minor words stay lowercase as in the official names
+(`Lake of the Woods`, `Fond du Lac`).
+
+Independent cities are the exception: they keep a ` City` suffix, so
+`Baltimore City` (FIPS 24510) is distinct from `Baltimore` County
+(24005). The same applies to St. Louis MO and to Virginia's 38
+independent cities (e.g., `Fairfax` and `Fairfax City`, `Richmond` and
+`Richmond City`). Carson City NV is `Carson City`, with `TYPE` `city`.
+
+A name ending in ` City` isn't always a city: `Charles City` and
+`James City` VA are counties. Use `TYPE` to tell them apart.
+
+With this rule `(ST, COUNTY)` is a unique key, as is `FIPS`.
 
 ## Acknowledgments
 
