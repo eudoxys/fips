@@ -72,7 +72,7 @@ taking it.
 
 3. Make your changes. Match the existing code style and don't reformat
    code you aren't changing.
-4. Add or update tests in `fips/_tests/` and run them:
+4. Add or update tests in `fips/_test/` and run them:
 
        pytest
 

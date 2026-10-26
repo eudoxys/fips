@@ -120,7 +120,7 @@ class County:
             # a single key indexes by label, several by tuple of labels
             index = values if len(keys) == 1 else [tuple(values)]
             self.data = _counties_by(*keys).loc[index].reset_index()
-        except KeyError:
+        except (KeyError,ValueError): # ValueError: no keys given
             self.data = None
         if self.data is None or len(self.data) > 1:
             raise KeyError(f"{kwargs=} is not a valid unique key")
@@ -3145,7 +3145,7 @@ VA,Portsmouth City,city,51740,36.859339,-76.356973,dq99wq,-5,1,EAST,SERC,PJM
 VA,Powhatan,county,51145,37.549404,-77.912855,dq8te5,-5,1,EAST,SERC,PJM
 VA,Prince Edward,county,51147,37.224881,-78.432957,dq85z0,-5,1,EAST,SERC,PJM
 VA,Prince George,county,51149,37.187325,-77.220993,dq95dc,-5,1,EAST,SERC,PJM
-VA,Prince William,county,51153,38.701119,-77.479579,dqbuhv,-5,1,EAST,RFRF,PJM
+VA,Prince William,county,51153,38.701119,-77.479579,dqbuhv,-5,1,EAST,RF,PJM
 VA,Pulaski,county,51155,37.063385,-80.713444,dnwdg7,-5,1,EAST,RF,PJM
 VA,Radford City,city,51750,37.120119,-80.559147,dnwenv,-5,1,EAST,SERC,PJM
 VA,Rappahannock,county,51157,38.684522,-78.168824,dqbkj4,-5,1,EAST,SERC,PJM

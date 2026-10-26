@@ -57,7 +57,7 @@ class State:
 
         try:
             self.data = _states_by(*keys).loc[values].reset_index()
-        except KeyError:
+        except (KeyError,ValueError): # ValueError: no keys given
             self.data = None
         if self.data is None or len(self.data) > 1:
             raise KeyError(f"{kwargs=} is not a valid unique key")
@@ -155,7 +155,7 @@ class States(pd.DataFrame):
                 ["Alabama","AL","01",-6.0,1,"EAST","SERC","USA"],
                 ["Alaska","AK","02",-9.0,1,"AK","","USA"],
                 ["Arizona","AZ","04",-7.0,0,"WECC","WECC","USA"],
-                ["Arkansas","AR","05",-6.0,1,"EAST","SERC","USA"],
+                ["Arkansas","AR","05",-6.0,1,"EAST","SERC|MRO","USA"],
                 ["California","CA","06",-8.0,1,"WECC","WECC","USA"],
                 ["Colorado","CO","08",-7.0,1,"WECC","WECC","USA"],
                 ["Connecticut","CT","09",-5.0,1,"EAST","NPCC","USA"],
@@ -169,8 +169,8 @@ class States(pd.DataFrame):
                 ["Indiana","IN","18",-5.0,1,"EAST","RF","USA"],
                 ["Iowa","IA","19",-6.0,1,"EAST","MRO","USA"],
                 ["Kansas","KS","20",-6.0,1,"EAST","MRO","USA"],
-                ["Kentucky","KY","21",-5.0,1,"EAST","SERC","USA"],
-                ["Louisiana","LA","22",-6.0,1,"EAST","SERC","USA"],
+                ["Kentucky","KY","21",-5.0,1,"EAST","SERC|RF","USA"],
+                ["Louisiana","LA","22",-6.0,1,"EAST","SERC|MRO","USA"],
                 ["Maine","ME","23",-5.0,1,"EAST","NPCC","USA"],
                 ["Maryland","MD","24",-5.0,1,"EAST","RF","USA"],
                 ["Massachusetts","MA","25",-5.0,1,"EAST","NPCC","USA"],
@@ -195,7 +195,7 @@ class States(pd.DataFrame):
                 ["South Carolina","SC","45",-5.0,1,"EAST","SERC","USA"],
                 ["South Dakota","SD","46",-6.0,1,"EAST","MRO|WECC","USA"],
                 ["Tennessee","TN","47",-6.0,1,"EAST","SERC","USA"],
-                ["Texas","TX","48",-6.0,1,"ERCOT","TRE|MRO|WECC","USA"],
+                ["Texas","TX","48",-6.0,1,"ERCOT","TRE|MRO|WECC|SERC","USA"],
                 ["Utah","UT","49",-7.0,1,"WECC","WECC","USA"],
                 ["Vermont","VT","50",-5.0,1,"EAST","NPCC","USA"],
                 ["Virginia","VA","51",-5.0,1,"EAST","SERC|RF","USA"],
@@ -225,7 +225,7 @@ class States(pd.DataFrame):
             ),
         )
         if use_index:
-            data.set_index(use_index,inplace=True)
+            data = data.set_index(use_index)
         super().__init__(data.sort_index())
 
 @functools.cache

@@ -26,7 +26,7 @@
 
 # Tests and docs
 
-- [ ] Move tests to `fips/_test/`, pytest style, data invariants and CLI (#12)
+- [x] Move tests to `fips/_test/`, pytest style, data invariants and CLI (#12)
 
 - [ ] Bring docstring and README examples up to date with real output (#10)
 

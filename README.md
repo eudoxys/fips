@@ -70,7 +70,7 @@ See https://www.eudoxys.com/fips.
         AL        Alabama   01      -6.0    1   EAST     SERC     USA
         AK         Alaska   02      -9.0    1     AK              USA
         AZ        Arizona   04      -7.0    0   WECC     WECC     USA
-        AR       Arkansas   05      -6.0    1   EAST     SERC     USA
+        AR       Arkansas   05      -6.0    1   EAST SERC|MRO     USA
         CA     California   06      -8.0    1   WECC     WECC     USA
         ..            ...  ...       ...  ...    ...      ...     ...
         VA       Virginia   51      -5.0    1   EAST  SERC|RF     USA
