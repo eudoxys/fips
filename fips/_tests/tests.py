@@ -9,6 +9,7 @@ import pathlib
 import subprocess
 import sys
 import unittest
+import warnings
 import pandas as pd
 import fips
 import fips.cli
@@ -276,6 +277,54 @@ class TestCLI(unittest.TestCase):
             code = fips.cli.main("CA","Alameda","X")
         self.assertEqual(code,fips.cli.E_SYNTAX)
         self.assertIn("expected STATE [COUNTY], got 3 arguments",err.getvalue())
+
+    def run_cli_error(self,*args):
+        out = io.StringIO()
+        err = io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = fips.cli.main(*args)
+        return code,out.getvalue(),err.getvalue()
+
+    def test_cli_error_to_stderr(self):
+        code,out,err = self.run_cli_error("CA","Nowhere")
+        self.assertEqual(code,fips.cli.E_FAILED)
+        self.assertEqual(out,"")
+        self.assertTrue(err.startswith("ERROR [fips]: "))
+        self.assertEqual(len(err.splitlines()),1)
+
+    def test_cli_debug_raises(self):
+        for opt in ["-d","--debug"]:
+            with self.subTest(opt=opt), self.assertRaises(KeyError):
+                fips.cli.main(opt,"CA","Nowhere")
+
+    def test_cli_args_do_not_change_argv(self):
+        argv = list(sys.argv)
+        self.run_cli("-f","csv","CA")
+        self.assertEqual(sys.argv,argv)
+
+    def test_cli_no_header_no_index(self):
+        for opts in [["-H"],["--no-header"],["--header"]]:
+            with self.subTest(opts=opts):
+                lines = self.run_cli("-f","csv",*opts,"CA")
+                self.assertEqual(len(lines),1)
+                self.assertTrue(lines[0].startswith("CA,California,06,"))
+        for opts in [["--no-index"],["--index"]]:
+            with self.subTest(opts=opts):
+                lines = self.run_cli("-f","csv",*opts,"CA")
+                self.assertTrue(lines[0].startswith("STATE,FIPS,"))
+                self.assertTrue(lines[1].startswith("California,06,"))
+
+    def test_cli_warning_option(self):
+        for opts,shown in [([],False),(["-w"],True),(["--warning"],True)]:
+            err = io.StringIO()
+            # catch_warnings restores the warning handler main() installs
+            with self.subTest(opts=opts), warnings.catch_warnings(), \
+                    contextlib.redirect_stdout(io.StringIO()), \
+                    contextlib.redirect_stderr(err):
+                warnings.simplefilter("always")
+                self.assertEqual(fips.cli.main(*opts,"CA"),fips.cli.E_OK)
+                warnings.warn("test warning")
+            self.assertEqual("test warning" in err.getvalue(),shown)
 
 if __name__ == "__main__":
     unittest.main()

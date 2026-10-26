@@ -75,9 +75,10 @@ Everything is fast and offline; the full suite runs in seconds. CI
 - `State`/`County` rebuild and re-parse the whole table on every call
   (#15).
 - Tests live in `fips/_tests/tests.py` (unittest style), not
-  `fips/_test/` (#12). CLI options don't follow Eudoxys conventions yet,
-  e.g. no `-d` short form, `--warning` disables rather than enables
-  (#11). Docstring and README examples are out of date (#10).
+  `fips/_test/` (#12). Docstring and README examples are out of date
+  (#10).
+- The CLI's `--header`/`--index` are hidden, deprecated aliases of
+  `--no-header`/`--no-index`, kept so existing scripts still work (#11).
 
 ## Working rules
 
