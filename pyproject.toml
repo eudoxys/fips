@@ -9,8 +9,7 @@ fips = ["*.py"]
 dependencies = {file=["requirements.txt"]}
 
 [tool.pytest.ini_options]
-testpaths = ["fips/_tests"]
-python_files = ["tests.py", "test_*.py"]
+testpaths = ["fips/_test"]
 
 [project]
 name = "fips"

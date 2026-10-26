@@ -73,7 +73,7 @@ All columns except `REGION` are curated by hand.
 The script reads and writes the source file `fips/counties.py` next to this
 folder, so it runs from any directory. `--write` replaces only the last
 field of each table line; every other byte of `counties.py` is unchanged.
-The test `test_counties_REGION_reproducible` in `fips/_tests/tests.py`
+The test `test_counties_REGION_reproducible` in `fips/_test/test_counties.py`
 runs `--check`, so an edit to the table or the script that leaves them out
 of step fails CI.
 

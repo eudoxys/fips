@@ -11,7 +11,7 @@ $(VENV):
 	$(VENV)/bin/pip install --upgrade pip
 
 # pdoc documents fips/__init__.py and its public submodules; private
-# modules (fips._data, fips._tests) are skipped. Used by deploy-pages.yaml.
+# modules (fips._data, fips._test) are skipped. Used by deploy-pages.yaml.
 docs: $(VENV)
 	$(VENV)/bin/pip install --upgrade pdoc . -r requirements.txt
 	$(VENV)/bin/pdoc $(PACKAGE)/__init__.py -o $@ --logo $(LOGO) --logo-link $(LINK) --math --mermaid
